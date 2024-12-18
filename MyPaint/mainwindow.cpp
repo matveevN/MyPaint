@@ -1,7 +1,7 @@
 #include "mainwindow.h"
+#include "Triangle.h"
 #include "ellipse.h"
 #include "rectangle.h"
-#include "triangle.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget* parent)
@@ -122,7 +122,7 @@ void MainWindow::mousePressEvent(QMouseEvent* event) {
                 } else if (isConnecting) {
                         IFigure* clickedFigure = nullptr;
 
-                        for (auto figure : figures) {
+                        for (auto figure : std::as_const(figures)) {
                                 if (figure->contains(event->pos())) {
                                         clickedFigure = figure;
                                         break;
@@ -146,7 +146,7 @@ void MainWindow::mousePressEvent(QMouseEvent* event) {
                         update();
                 } else if (isMoving) {
                         movingFigure = nullptr;
-                        for (auto figure : figures) {
+                        for (auto figure : std::as_const(figures)) {
                                 if (figure->contains(event->pos())) {
                                         movingFigure = figure;
                                         moveStartPos = event->pos();
@@ -223,12 +223,12 @@ void MainWindow::paintEvent(QPaintEvent* event) {
                 painter.fillRect(rect(), Qt::white);
         }
 
-        for (const auto& figure : figures) {
+        for (const auto& figure : std::as_const(figures)) {
                 figure->draw(painter);
         }
 
         painter.setPen(Qt::black);
-        for (const auto& connection : connections) {
+        for (const auto& connection : std::as_const(connections)) {
                 IFigure* start = connection.first;
                 IFigure* end = connection.second;
                 if (start && end) {
@@ -278,7 +278,7 @@ void MainWindow::saveFiguresToJson(const QString& fileName) {
 
         QJsonArray figuresArray;
 
-        for (const auto& figure : figures) {
+        for (const auto& figure : std::as_const(figures)) {
                 QJsonObject figureObject;
 
                 if (auto rect = dynamic_cast<Rectangle*>(figure)) {
@@ -309,7 +309,7 @@ void MainWindow::saveFiguresToJson(const QString& fileName) {
 
         QJsonArray connectionsArray;
 
-        for (const auto& connection : connections) {
+        for (const auto& connection : std::as_const(connections)) {
                 QJsonObject connectionObject;
                 int startIdx = figures.indexOf(connection.first);
                 int endIdx = figures.indexOf(connection.second);
@@ -344,7 +344,7 @@ void MainWindow::loadFiguresFromJson(const QString& fileName) {
         QJsonArray figuresArray = rootObject["figures"].toArray();
         figures.clear();
 
-        for (const QJsonValue& value : figuresArray) {
+        for (const QJsonValue& value : std::as_const(figuresArray)) {
                 QJsonObject figureObject = value.toObject();
                 QString type = figureObject["type"].toString();
 
@@ -373,7 +373,7 @@ void MainWindow::loadFiguresFromJson(const QString& fileName) {
         }
 
         QJsonArray connectionsArray = rootObject["connections"].toArray();
-        for (const QJsonValue& value : connectionsArray) {
+        for (const QJsonValue& value : std::as_const(connectionsArray)) {
                 QJsonObject connectionObject = value.toObject();
                 int startIdx = connectionObject["startIndex"].toInt();
                 int endIdx = connectionObject["endIndex"].toInt();
