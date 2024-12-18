@@ -26,13 +26,16 @@ bool Triangle::contains(const QPoint& point) const {
                        / 2.0;
         };
 
-        double fullArea = area(point1, point2, point3);
+        QPoint p1 = center + QPoint(size, 0);
+        QPoint p2 = center + QPoint(-size, 0);
+        QPoint p3 = center + QPoint(0, -size);
 
-        double area1 = area(point, point2, point3);
-        double area2 = area(point1, point, point3);
-        double area3 = area(point1, point2, point);
+        double fullArea = area(p1, p2, p3);
+        double area1 = area(point, p2, p3);
+        double area2 = area(p1, point, p3);
+        double area3 = area(p1, p2, point);
 
-        return abs(fullArea - (area1 + area2 + area3)) < 1e-5;
+        return std::abs(fullArea - (area1 + area2 + area3)) < 1e-5;
 }
 
 void Triangle::move(const QPoint& offset) {
@@ -47,23 +50,10 @@ void Triangle::setSize(int newSize) {
         size = newSize;
 }
 
-QPoint Triangle::getPoint1() const {
-        return point1;
-}
-QPoint Triangle::getPoint2() const {
-        return point2;
-}
-
-QPoint Triangle::getPoint3() const {
-        return point3;
-}
-
 int Triangle::getSize() const {
         return size;
 }
 
 QPoint Triangle::getCenter() const {
-        int centerX = (point1.x() + point2.x() + point3.x()) / 3;
-        int centerY = (point1.y() + point2.y() + point3.y()) / 3;
         return center;
 }
