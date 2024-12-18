@@ -1,6 +1,7 @@
 #ifndef TRIANGLE_H
 #define TRIANGLE_H
 
+#include <QPainter>
 #include <QPoint>
 #include "IFigure.h"
 
@@ -8,11 +9,7 @@ class Triangle : public IFigure {
 public:
         Triangle(const QPoint& center, int size);
 
-        QPoint getPoint1() const;
-        QPoint getPoint2() const;
-        QPoint getPoint3() const;
         QPoint getCenter() const override;
-
         int getSize() const;
 
         bool contains(const QPoint& point) const override;
@@ -25,10 +22,9 @@ public:
 
 private:
         QPoint center;
-        QPoint point1;
-        QPoint point2;
-        QPoint point3;
         int size;
+
+        void calculateVertices(QPoint& p1, QPoint& p2, QPoint& p3) const;
 };
 
 #endif // TRIANGLE_H

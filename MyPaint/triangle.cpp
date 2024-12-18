@@ -5,13 +5,39 @@ Triangle::Triangle(const QPoint& center, int size)
 , size(size) {
 }
 
+int Triangle::getSize() const {
+        return size;
+}
+
+void Triangle::setSize(int newSize) {
+        size = newSize;
+}
+
+QPoint Triangle::getCenter() const {
+        return center;
+}
+
+void Triangle::setCenter(const QPoint& newCenter) {
+        center = newCenter;
+}
+
+///проблема к центру треугольника
+void Triangle::calculateVertices(QPoint& p1, QPoint& p2, QPoint& p3) const {
+        // Высота равностороннего треугольника
+        int height = static_cast<int>(size * sqrt(3) / 2);
+
+        // Смещение вершин относительно центра
+        p1 = center + QPoint(0, -2 * height / 3);    // Верхняя
+        p2 = center + QPoint(-size / 2, height / 3); // Левая
+        p3 = center + QPoint(size / 2, height / 3);  // Правая
+}
+
 void Triangle::draw(QPainter& painter) const {
         painter.setPen(QPen(Qt::black, 2));
         painter.setBrush(Qt::NoBrush);
 
-        QPoint p1 = center + QPoint(size, 0);
-        QPoint p2 = center + QPoint(-size, 0);
-        QPoint p3 = center + QPoint(0, -size);
+        QPoint p1, p2, p3;
+        calculateVertices(p1, p2, p3);
 
         QPolygon polygon;
         polygon << p1 << p2 << p3;
@@ -26,9 +52,8 @@ bool Triangle::contains(const QPoint& point) const {
                        / 2.0;
         };
 
-        QPoint p1 = center + QPoint(size, 0);
-        QPoint p2 = center + QPoint(-size, 0);
-        QPoint p3 = center + QPoint(0, -size);
+        QPoint p1, p2, p3;
+        calculateVertices(p1, p2, p3);
 
         double fullArea = area(p1, p2, p3);
         double area1 = area(point, p2, p3);
@@ -40,20 +65,4 @@ bool Triangle::contains(const QPoint& point) const {
 
 void Triangle::move(const QPoint& offset) {
         center += offset;
-}
-
-void Triangle::setCenter(const QPoint& newCenter) {
-        center = newCenter;
-}
-
-void Triangle::setSize(int newSize) {
-        size = newSize;
-}
-
-int Triangle::getSize() const {
-        return size;
-}
-
-QPoint Triangle::getCenter() const {
-        return center;
 }
