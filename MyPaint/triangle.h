@@ -35,8 +35,8 @@ public:
         QString getType() const override;
 
 private:
-        QPoint center;
-        int size;
+        QPoint _center;
+        int _size;
 
         void calculateVertices(QPoint& p1, QPoint& p2, QPoint& p3) const;
 };

@@ -42,27 +42,27 @@ private slots:
         void onConnectButtonClicked();
 
 private:
-        Ui::MainWindow *ui;
-        QVector<IFigure *> figures;
+        Ui::MainWindow *_ui;
+        QVector<IFigure *> _figures;
         //QList<IFigure *> figures;
-        QVector<QPair<IFigure *, IFigure *>> connections;
+        QVector<QPair<IFigure *, IFigure *>> _connections;
 
-        IFigure *movingFigure = nullptr;
-        IFigure *selectedFigure = nullptr;
-        IFigure *currentFigure = nullptr;
-        IFigure *startConnectionFigure = nullptr;
+        IFigure *_movingFigure = nullptr;
+        IFigure *_selectedFigure = nullptr;
+        IFigure *_currentFigure = nullptr;
+        IFigure *_startConnectionFigure = nullptr;
 
-        QPoint startPoint;
-        QPoint moveStartPos;
-        QPoint connectionCursor;
+        QPoint _startPoint;
+        QPoint _moveStartPos;
+        QPoint _connectionCursor;
 
-        QPixmap backgroundPixmap;
+        QPixmap _backgroundPixmap;
 
-        bool isDrawing = false;
-        bool isMoving = false;
-        bool isMovingMode = false;
-        bool isDeleting = false;
-        bool isConnecting = false;
+        bool _isDrawing = false;
+        bool _isMoving = false;
+        bool _isMovingMode = false;
+        bool _isDeleting = false;
+        bool _isConnecting = false;
 };
 
 #endif // MAINWINDOW_H

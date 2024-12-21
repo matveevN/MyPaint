@@ -3,8 +3,8 @@
 #include <qjsonobject.h>
 
 Triangle::Triangle(const QPoint& center, int size)
-: center(center)
-, size(size) {
+: _center(center)
+, _size(size) {
 }
 
 Triangle::Triangle(const Triangle&) = default;
@@ -14,30 +14,30 @@ Triangle& Triangle::operator=(Triangle&&) noexcept = default;
 Triangle::~Triangle() = default;
 
 int Triangle::getSize() const {
-        return size;
+        return _size;
 }
 
 void Triangle::setSize(int newSize) {
-        size = newSize;
+        _size = newSize;
 }
 
 QPoint Triangle::getCenter() const {
-        return center;
+        return _center;
 }
 
 void Triangle::setCenter(const QPoint& newCenter) {
-        center = newCenter;
+        _center = newCenter;
 }
 
 ///проблема к центру треугольника
 void Triangle::calculateVertices(QPoint& p1, QPoint& p2, QPoint& p3) const {
         // Высота равностороннего треугольника
-        int height = static_cast<int>(size * sqrt(3) / 2);
+        int height = static_cast<int>(_size * sqrt(3) / 2);
 
         // Смещение вершин относительно центра
-        p1 = center + QPoint(0, -2 * height / 3);    // Верхняя
-        p2 = center + QPoint(-size / 2, height / 3); // Левая
-        p3 = center + QPoint(size / 2, height / 3);  // Правая
+        p1 = _center + QPoint(0, -2 * height / 3);     // Верхняя
+        p2 = _center + QPoint(-_size / 2, height / 3); // Левая
+        p3 = _center + QPoint(_size / 2, height / 3);  // Правая
 }
 
 void Triangle::draw(QPainter& painter) const {
@@ -72,7 +72,7 @@ bool Triangle::contains(const QPoint& point) const {
 }
 
 void Triangle::move(const QPoint& offset) {
-        center += offset;
+        _center += offset;
 }
 
 QString Triangle::getType() const {
@@ -82,23 +82,23 @@ QString Triangle::getType() const {
 QJsonObject Triangle::toJson() const {
         QJsonObject json;
         json["type"] = getType();
-        json["center"] = QJsonArray{center.x(), center.y()};
-        json["size"] = size;
+        json["center"] = QJsonArray{_center.x(), _center.y()};
+        json["size"] = _size;
         return json;
 }
 
 void Triangle::fromJson(const QJsonObject& json) {
-        center = QPoint(json["center"].toArray()[0].toInt(),
-                        json["center"].toArray()[1].toInt());
-        size = json["size"].toInt();
+        _center = QPoint(json["center"].toArray()[0].toInt(),
+                         json["center"].toArray()[1].toInt());
+        _size = json["size"].toInt();
 }
 
 void Triangle::initialize(const QPoint& startPoint) {
-        center = startPoint;
-        size = 0;
+        _center = startPoint;
+        _size = 0;
 }
 
 void Triangle::updateShape(const QPoint& currentPoint) {
-        size = static_cast<int>(QPointF(center).manhattanLength()
-                                - QPointF(currentPoint).manhattanLength());
+        _size = static_cast<int>(QPointF(_center).manhattanLength()
+                                 - QPointF(currentPoint).manhattanLength());
 }

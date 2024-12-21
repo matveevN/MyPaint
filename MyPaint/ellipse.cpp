@@ -3,9 +3,9 @@
 #include <qjsonobject.h>
 
 Ellipse::Ellipse(const QPoint& center, int radiusX, int radiusY)
-: center(center)
-, radiusX(radiusX)
-, radiusY(radiusY) {
+: _center(center)
+, _radiusX(radiusX)
+, _radiusY(radiusY) {
 }
 
 Ellipse::Ellipse(const Ellipse&) = default;
@@ -15,50 +15,50 @@ Ellipse& Ellipse::operator=(Ellipse&&) noexcept = default;
 Ellipse::~Ellipse() = default;
 
 QPoint Ellipse::getCenter() const {
-        return center;
+        return _center;
 }
 
 void Ellipse::setCenter(const QPoint& newCenter) {
-        center = newCenter;
+        _center = newCenter;
 }
 
 int Ellipse::getRadiusX() const {
-        return radiusX;
+        return _radiusX;
 }
 
 void Ellipse::setRadiusX(int radius) {
-        radiusX = radius;
+        _radiusX = radius;
 }
 
 int Ellipse::getRadiusY() const {
-        return radiusY;
+        return _radiusY;
 }
 
 void Ellipse::setRadiusY(int radius) {
-        radiusY = radius;
+        _radiusY = radius;
 }
 
 void Ellipse::setRadius(int radiusX, int radiusY) {
-        this->radiusX = radiusX;
-        this->radiusY = radiusY;
+        _radiusX = radiusX;
+        _radiusY = radiusY;
 }
 
 void Ellipse::draw(QPainter& painter) const {
         painter.setPen(QPen(Qt::black, 2));
         painter.setBrush(QBrush(Qt::NoBrush));
-        painter.drawEllipse(center, radiusX, radiusY);
+        painter.drawEllipse(_center, _radiusX, _radiusY);
 }
 
 bool Ellipse::contains(const QPoint& point) const {
-        float dx = point.x() - center.x();
-        float dy = point.y() - center.y();
-        return (dx * dx) / static_cast<float>(radiusX * radiusX)
-                   + (dy * dy) / static_cast<float>(radiusY * radiusY)
+        float dx = point.x() - _center.x();
+        float dy = point.y() - _center.y();
+        return (dx * dx) / static_cast<float>(_radiusX * _radiusX)
+                   + (dy * dy) / static_cast<float>(_radiusY * _radiusY)
                <= 1.0f;
 }
 
 void Ellipse::move(const QPoint& offset) {
-        center += offset;
+        _center += offset;
 }
 
 QString Ellipse::getType() const {
@@ -68,26 +68,26 @@ QString Ellipse::getType() const {
 QJsonObject Ellipse::toJson() const {
         QJsonObject json;
         json["type"] = getType();
-        json["center"] = QJsonArray{center.x(), center.y()};
-        json["radiusX"] = radiusX;
-        json["radiusY"] = radiusY;
+        json["center"] = QJsonArray{_center.x(), _center.y()};
+        json["radiusX"] = _radiusX;
+        json["radiusY"] = _radiusY;
         return json;
 }
 
 void Ellipse::fromJson(const QJsonObject& json) {
-        center = QPoint(json["center"].toArray()[0].toInt(),
-                        json["center"].toArray()[1].toInt());
-        radiusX = json["radiusX"].toInt();
-        radiusY = json["radiusY"].toInt();
+        _center = QPoint(json["center"].toArray()[0].toInt(),
+                         json["center"].toArray()[1].toInt());
+        _radiusX = json["radiusX"].toInt();
+        _radiusY = json["radiusY"].toInt();
 }
 
 void Ellipse::initialize(const QPoint& startPoint) {
-        center = startPoint;
-        radiusX = 0;
-        radiusY = 0;
+        _center = startPoint;
+        _radiusX = 0;
+        _radiusY = 0;
 }
 
 void Ellipse::updateShape(const QPoint& currentPoint) {
-        radiusX = std::abs(center.x() - currentPoint.x());
-        radiusY = std::abs(center.y() - currentPoint.y());
+        _radiusX = std::abs(_center.x() - currentPoint.x());
+        _radiusY = std::abs(_center.y() - currentPoint.y());
 }

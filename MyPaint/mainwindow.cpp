@@ -7,81 +7,81 @@
 
 MainWindow::MainWindow(QWidget* parent)
 : QMainWindow(parent)
-, ui(new Ui::MainWindow) {
-        ui->setupUi(this);
+, _ui(new Ui::MainWindow) {
+        _ui->setupUi(this);
 
-        connect(ui->rectangleButton,
+        connect(_ui->rectangleButton,
                 &QPushButton::clicked,
                 this,
                 &MainWindow::onRectangleButtonClicked);
-        connect(ui->ellipseButton,
+        connect(_ui->ellipseButton,
                 &QPushButton::clicked,
                 this,
                 &MainWindow::onEllipseButtonClicked);
-        connect(ui->triangleButton,
+        connect(_ui->triangleButton,
                 &QPushButton::clicked,
                 this,
                 &MainWindow::onTriangleButtonClicked);
-        connect(ui->moveButton,
+        connect(_ui->moveButton,
                 &QPushButton::clicked,
                 this,
                 &MainWindow::onMoveButtonClicked);
-        connect(ui->deleteButton,
+        connect(_ui->deleteButton,
                 &QPushButton::clicked,
                 this,
                 &MainWindow::onDeleteButtonClicked);
-        connect(ui->saveButton,
+        connect(_ui->saveButton,
                 &QPushButton::clicked,
                 this,
                 &MainWindow::onSaveButtonClicked);
-        connect(ui->loadButton,
+        connect(_ui->loadButton,
                 &QPushButton::clicked,
                 this,
                 &MainWindow::onLoadButtonClicked);
-        connect(ui->connectButton,
+        connect(_ui->connectButton,
                 &QPushButton::clicked,
                 this,
                 &MainWindow::onConnectButtonClicked);
 }
 MainWindow::~MainWindow() {
-        qDeleteAll(figures);
-        delete ui;
+        qDeleteAll(_figures);
+        delete _ui;
 }
 
 void MainWindow::onRectangleButtonClicked() {
-        currentFigure = new Rectangle(QPoint(), QPoint());
-        isDrawing = true;
+        _currentFigure = new Rectangle(QPoint(), QPoint());
+        _isDrawing = true;
 }
 
 void MainWindow::onEllipseButtonClicked() {
-        currentFigure = new Ellipse(QPoint(), 0, 0);
-        isDrawing = true;
+        _currentFigure = new Ellipse(QPoint(), 0, 0);
+        _isDrawing = true;
 }
 
 void MainWindow::onTriangleButtonClicked() {
-        currentFigure = new Triangle(QPoint(), 0);
-        isDrawing = true;
+        _currentFigure = new Triangle(QPoint(), 0);
+        _isDrawing = true;
 }
 
 void MainWindow::onMoveButtonClicked() {
-        isMoving = !isMoving;
-        if (isMoving) {
+        _isMoving = !_isMoving;
+        if (_isMoving) {
                 setCursor(Qt::ClosedHandCursor);
         } else {
                 setCursor(Qt::ArrowCursor);
         }
-        if (!isMoving) {
-                movingFigure = nullptr;
+        if (!_isMoving) {
+                _movingFigure = nullptr;
         }
 }
 
 void MainWindow::onDeleteButtonClicked() {
-        isDeleting = true;
+        _isDeleting = true;
 }
 
 void MainWindow::onConnectButtonClicked() {
-        isConnecting = true;
-        startConnectionFigure = nullptr;
+        _isConnecting = true;
+        _startConnectionFigure = nullptr;
         update();
 }
 
@@ -93,7 +93,7 @@ void MainWindow::onSaveButtonClicked() {
         if (fileName.isEmpty())
                 return;
 
-        Commands::saveToImageWithMetadata(figures, connections, fileName);
+        Commands::saveToImageWithMetadata(_figures, _connections, fileName);
 }
 
 void MainWindow::onLoadButtonClicked() {
@@ -105,119 +105,119 @@ void MainWindow::onLoadButtonClicked() {
         if (fileName.isEmpty())
                 return;
 
-        Commands::loadFromImageWithMetadata(figures, connections, fileName);
+        Commands::loadFromImageWithMetadata(_figures, _connections, fileName);
         update();
 }
 
 void MainWindow::mousePressEvent(QMouseEvent* event) {
         if (event->button() == Qt::LeftButton) {
-                if (isDeleting) {
-                        for (int i = 0; i < figures.size(); ++i) {
-                                if (figures[i]->contains(event->pos())) {
-                                        for (int j = 0; j < connections.size();
+                if (_isDeleting) {
+                        for (int i = 0; i < _figures.size(); ++i) {
+                                if (_figures[i]->contains(event->pos())) {
+                                        for (int j = 0; j < _connections.size();
                                              ++j) {
-                                                if (connections[j].first
-                                                        == figures[i]
-                                                    || connections[j].second
-                                                           == figures[i]) {
-                                                        connections.removeAt(j);
+                                                if (_connections[j].first
+                                                        == _figures[i]
+                                                    || _connections[j].second
+                                                           == _figures[i]) {
+                                                        _connections.removeAt(j);
                                                         --j;
                                                 }
                                         }
 
-                                        delete figures[i];
-                                        figures.removeAt(i);
-                                        isDeleting = false;
+                                        delete _figures[i];
+                                        _figures.removeAt(i);
+                                        _isDeleting = false;
                                         update();
                                         break;
                                 }
                         }
-                } else if (isDrawing) {
-                        startPoint = event->pos();
+                } else if (_isDrawing) {
+                        _startPoint = event->pos();
 
-                        if (currentFigure) {
-                                currentFigure->initialize(startPoint);
+                        if (_currentFigure) {
+                                _currentFigure->initialize(_startPoint);
                         }
-                } else if (isConnecting) {
+                } else if (_isConnecting) {
                         IFigure* clickedFigure = nullptr;
 
-                        for (auto& figure : figures) {
+                        for (auto& figure : _figures) {
                                 if (figure->contains(event->pos())) {
                                         clickedFigure = figure;
                                         break;
                                 }
                         }
 
-                        if (!startConnectionFigure) {
-                                startConnectionFigure = clickedFigure;
-                                connectionCursor = event->pos();
+                        if (!_startConnectionFigure) {
+                                _startConnectionFigure = clickedFigure;
+                                _connectionCursor = event->pos();
                         } else if (clickedFigure
-                                   && clickedFigure != startConnectionFigure) {
-                                connections.append(
-                                    qMakePair(startConnectionFigure,
+                                   && clickedFigure != _startConnectionFigure) {
+                                _connections.append(
+                                    qMakePair(_startConnectionFigure,
                                               clickedFigure));
-                                startConnectionFigure = nullptr;
-                                isConnecting = false;
+                                _startConnectionFigure = nullptr;
+                                _isConnecting = false;
                         } else {
-                                startConnectionFigure = nullptr;
-                                isConnecting = false;
+                                _startConnectionFigure = nullptr;
+                                _isConnecting = false;
                         }
 
                         update();
-                } else if (isMoving) {
-                        movingFigure = nullptr;
-                        for (auto& figure : figures) {
+                } else if (_isMoving) {
+                        _movingFigure = nullptr;
+                        for (auto& figure : _figures) {
                                 if (figure->contains(event->pos())) {
-                                        movingFigure = figure;
-                                        moveStartPos = event->pos();
+                                        _movingFigure = figure;
+                                        _moveStartPos = event->pos();
                                         break;
                                 }
                         }
                 }
         } else if (event->button() == Qt::RightButton) {
-                if (isMoving) {
-                        isMoving = false;
-                        movingFigure = nullptr;
+                if (_isMoving) {
+                        _isMoving = false;
+                        _movingFigure = nullptr;
                         setCursor(Qt::ArrowCursor);
                         update();
-                } else if (isDrawing) {
-                        currentFigure = nullptr;
-                        isDrawing = false;
+                } else if (_isDrawing) {
+                        _currentFigure = nullptr;
+                        _isDrawing = false;
                         update();
-                } else if (isConnecting) {
-                        startConnectionFigure = nullptr;
-                        isConnecting = false;
+                } else if (_isConnecting) {
+                        _startConnectionFigure = nullptr;
+                        _isConnecting = false;
                         update();
                 }
         }
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent* event) {
-        if (isDrawing) {
-                if (currentFigure) {
-                        currentFigure->updateShape(event->pos());
+        if (_isDrawing) {
+                if (_currentFigure) {
+                        _currentFigure->updateShape(event->pos());
                 }
                 update();
-        } else if (isConnecting && startConnectionFigure) {
-                connectionCursor = event->pos();
+        } else if (_isConnecting && _startConnectionFigure) {
+                _connectionCursor = event->pos();
                 update();
-        } else if (isMoving && movingFigure) {
-                QPoint offset = event->pos() - moveStartPos;
-                movingFigure->move(offset);
-                moveStartPos = event->pos();
+        } else if (_isMoving && _movingFigure) {
+                QPoint offset = event->pos() - _moveStartPos;
+                _movingFigure->move(offset);
+                _moveStartPos = event->pos();
                 update();
         }
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent* event) {
-        if (isDrawing && event->button() == Qt::LeftButton) {
-                figures.append(currentFigure);
-                currentFigure = nullptr;
-                isDrawing = false;
+        if (_isDrawing && event->button() == Qt::LeftButton) {
+                _figures.append(_currentFigure);
+                _currentFigure = nullptr;
+                _isDrawing = false;
                 update();
-        } else if (isMoving && event->button() == Qt::LeftButton) {
-                isMoving = false;
-                movingFigure = nullptr;
+        } else if (_isMoving && event->button() == Qt::LeftButton) {
+                _isMoving = false;
+                _movingFigure = nullptr;
                 setCursor(Qt::ArrowCursor);
         }
 }
@@ -225,18 +225,18 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* event) {
 void MainWindow::paintEvent(QPaintEvent* event) {
         QPainter painter(this);
 
-        if (!backgroundPixmap.isNull()) {
-                painter.drawPixmap(0, 0, backgroundPixmap);
+        if (!_backgroundPixmap.isNull()) {
+                painter.drawPixmap(0, 0, _backgroundPixmap);
         } else {
                 painter.fillRect(rect(), Qt::white);
         }
 
-        for (const auto& figure : std::as_const(figures)) {
+        for (const auto& figure : std::as_const(_figures)) {
                 figure->draw(painter);
         }
 
         painter.setPen(QPen(Qt::black, 2));
-        for (const auto& connection : std::as_const(connections)) {
+        for (const auto& connection : std::as_const(_connections)) {
                 IFigure* start = connection.first;
                 IFigure* end = connection.second;
                 if (start && end) {
@@ -244,31 +244,31 @@ void MainWindow::paintEvent(QPaintEvent* event) {
                 }
         }
 
-        if (isConnecting && startConnectionFigure) {
-                QPoint startPoint = startConnectionFigure->getCenter();
+        if (_isConnecting && _startConnectionFigure) {
+                QPoint startPoint = _startConnectionFigure->getCenter();
                 painter.setPen(QPen(Qt::black, 2));
-                painter.drawLine(startPoint, connectionCursor);
+                painter.drawLine(startPoint, _connectionCursor);
         }
 
-        if (isDrawing && currentFigure) {
-                currentFigure->draw(painter);
+        if (_isDrawing && _currentFigure) {
+                _currentFigure->draw(painter);
         }
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* event) {
         if (event->key() == Qt::Key_Escape) {
-                if (isDrawing) {
-                        currentFigure = nullptr;
-                        isDrawing = false;
+                if (_isDrawing) {
+                        _currentFigure = nullptr;
+                        _isDrawing = false;
                         update();
-                } else if (isMoving) {
-                        isMoving = false;
-                        movingFigure = nullptr;
+                } else if (_isMoving) {
+                        _isMoving = false;
+                        _movingFigure = nullptr;
                         setCursor(Qt::ArrowCursor);
                         update();
-                } else if (isConnecting) {
-                        startConnectionFigure = nullptr;
-                        isConnecting = false;
+                } else if (_isConnecting) {
+                        _startConnectionFigure = nullptr;
+                        _isConnecting = false;
                         update();
                 }
         }

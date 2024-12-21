@@ -37,9 +37,9 @@ public:
         void setCenter(const QPoint& newCenter);
 
 private:
-        QPoint center;
-        int radiusX;
-        int radiusY;
+        QPoint _center;
+        int _radiusX;
+        int _radiusY;
 };
 
 #endif // ELLIPSE_H

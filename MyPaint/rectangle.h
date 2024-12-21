@@ -25,7 +25,7 @@ public:
         void updateShape(const QPoint& currentPoint) override;
 
         QRect boundingBox() const {
-                return QRect(topLeft, bottomRight);
+                return QRect(_topLeft, _bottomRight);
         }
         QString getType() const override;
 
@@ -39,8 +39,8 @@ public:
         void move(const QPoint& offset) override;
 
 private:
-        QPoint topLeft;
-        QPoint bottomRight;
+        QPoint _topLeft;
+        QPoint _bottomRight;
 };
 
 #endif // RECTANGLE_H
