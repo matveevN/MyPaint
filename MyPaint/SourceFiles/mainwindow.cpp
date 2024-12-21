@@ -3,7 +3,7 @@
 #include "./shapes/rectangle.h"
 #include "./shapes/triangle.h"
 #include "./utils/file_manager.h"
-#include "ui_mainwindow.h"
+#include "SourceFiles/ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget* parent)
 : QMainWindow(parent)
