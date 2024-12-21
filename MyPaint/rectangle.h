@@ -6,7 +6,7 @@
 #include <QRect>
 #include "IFigure.h"
 
-class Rectangle : public IFigure {
+class Rectangle final : public IFigure {
 public:
         Rectangle(const QPoint& topLeft, const QPoint& bottomRight);
         Rectangle(const Rectangle&);

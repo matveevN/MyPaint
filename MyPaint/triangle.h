@@ -5,7 +5,7 @@
 #include <QPoint>
 #include "IFigure.h"
 
-class Triangle : public IFigure {
+class Triangle final : public IFigure {
 public:
         Triangle(const QPoint& center, int size);
 

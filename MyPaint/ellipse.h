@@ -4,7 +4,7 @@
 #include <QPoint>
 #include "IFigure.h"
 
-class Ellipse : public IFigure {
+class Ellipse final : public IFigure {
 public:
         Ellipse(const QPoint& center, int radiusX, int radiusY);
         Ellipse(const Ellipse&);
