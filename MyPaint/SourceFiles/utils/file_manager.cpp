@@ -1,16 +1,16 @@
-#include "commands.h"
+#include "file_manager.h"
 #include ".././shapes/ellipse.h"
 #include ".././shapes/rectangle.h"
 #include ".././shapes/triangle.h"
 
-Commands::Commands() = default;
-Commands::Commands(const Commands&) = default;
-Commands::Commands(Commands&&) noexcept = default;
-Commands& Commands::operator=(const Commands&) = default;
-Commands& Commands::operator=(Commands&&) noexcept = default;
-Commands::~Commands() = default;
+FileManager::FileManager() = default;
+FileManager::FileManager(const FileManager&) = default;
+FileManager::FileManager(FileManager&&) noexcept = default;
+FileManager& FileManager::operator=(const FileManager&) = default;
+FileManager& FileManager::operator=(FileManager&&) noexcept = default;
+FileManager::~FileManager() = default;
 
-void Commands::saveToImageWithMetadata(
+void FileManager::saveToImageWithMetadata(
     const QVector<IFigure*>& figures,
     const QVector<QPair<IFigure*, IFigure*>>& connections,
     const QString& fileName) {
@@ -73,7 +73,7 @@ void Commands::saveToImageWithMetadata(
         }
 }
 
-void Commands::loadFromImageWithMetadata(
+void FileManager::loadFromImageWithMetadata(
     QVector<IFigure*>& figures,
     QVector<QPair<IFigure*, IFigure*>>& connections,
     const QString& fileName) {

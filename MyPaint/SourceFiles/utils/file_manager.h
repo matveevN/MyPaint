@@ -1,5 +1,5 @@
-#ifndef COMMANDS_H
-#define COMMANDS_H
+#ifndef FILE_MANAGER_H
+#define FILE_MANAGER_H
 
 #include <QFile>
 #include <QJsonArray>
@@ -8,14 +8,14 @@
 #include <QVector>
 #include ".././shapes/IFigure.h"
 
-class Commands {
+class FileManager {
 public:
-        Commands();
-        Commands(const Commands&);
-        Commands(Commands&&) noexcept;
-        Commands& operator=(const Commands&);
-        Commands& operator=(Commands&&) noexcept;
-        ~Commands();
+        FileManager();
+        FileManager(const FileManager&);
+        FileManager(FileManager&&) noexcept;
+        FileManager& operator=(const FileManager&);
+        FileManager& operator=(FileManager&&) noexcept;
+        ~FileManager();
         static void saveToImageWithMetadata(
             const QVector<IFigure*>& figures,
             const QVector<QPair<IFigure*, IFigure*>>& connections,
@@ -26,4 +26,4 @@ public:
             const QString& fileName);
 };
 
-#endif // COMMANDS_H
+#endif // FILE_MANAGER_H

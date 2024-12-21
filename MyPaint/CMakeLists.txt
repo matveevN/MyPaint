@@ -24,8 +24,8 @@ set(PROJECT_SOURCES
         SourceFiles/shapes/ellipse.cpp
         SourceFiles/shapes/triangle.h
         SourceFiles/shapes/triangle.cpp
-        SourceFiles/utils/commands.h
-        SourceFiles/utils/commands.cpp
+        SourceFiles/utils/file_manager.h
+        SourceFiles/utils/file_manager.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

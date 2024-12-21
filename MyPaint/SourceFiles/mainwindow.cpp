@@ -2,7 +2,7 @@
 #include "./shapes/ellipse.h"
 #include "./shapes/rectangle.h"
 #include "./shapes/triangle.h"
-#include "./utils/commands.h"
+#include "./utils/file_manager.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget* parent)
@@ -93,7 +93,7 @@ void MainWindow::onSaveButtonClicked() {
         if (fileName.isEmpty())
                 return;
 
-        Commands::saveToImageWithMetadata(_figures, _connections, fileName);
+        FileManager::saveToImageWithMetadata(_figures, _connections, fileName);
 }
 
 void MainWindow::onLoadButtonClicked() {
@@ -105,7 +105,7 @@ void MainWindow::onLoadButtonClicked() {
         if (fileName.isEmpty())
                 return;
 
-        Commands::loadFromImageWithMetadata(_figures, _connections, fileName);
+        FileManager::loadFromImageWithMetadata(_figures, _connections, fileName);
         update();
 }
 
