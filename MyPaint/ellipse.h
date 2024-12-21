@@ -7,8 +7,22 @@
 class Ellipse : public IFigure {
 public:
         Ellipse(const QPoint& center, int radiusX, int radiusY);
+        Ellipse(const Ellipse&) = default;
+        Ellipse(Ellipse&&) noexcept = default;
+        Ellipse& operator=(const Ellipse&) = default;
+        Ellipse& operator=(Ellipse&&) noexcept = default;
+        ~Ellipse() = default;
 
         QPoint getCenter() const override;
+
+        QString getType() const override;
+
+        void initialize(const QPoint& startPoint) override;
+
+        void updateShape(const QPoint& currentPoint) override;
+
+        QJsonObject toJson() const override;
+        void fromJson(const QJsonObject& json) override;
 
         int getRadiusX() const;
         int getRadiusY() const;

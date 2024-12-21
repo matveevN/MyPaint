@@ -27,6 +27,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         rectangle.h rectangle.cpp
         ellipse.h ellipse.cpp
         triangle.h triangle.cpp
+        commands.h commands.cpp
+
 
     )
 # Define target properties for Android with Qt 6 as:

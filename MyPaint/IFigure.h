@@ -11,6 +11,15 @@ public:
         virtual void draw(QPainter& painter) const = 0;
         virtual void move(const QPoint& offset) = 0;
 
+        virtual void initialize(const QPoint& startPoint) = 0;
+
+        virtual void updateShape(const QPoint& currentPoint) = 0;
+
+        virtual QJsonObject toJson() const = 0;
+        virtual void fromJson(const QJsonObject& json) = 0;
+
+        virtual QString getType() const = 0;
+
         virtual ~IFigure() = default;
 };
 

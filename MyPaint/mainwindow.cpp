@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "Triangle.h"
+#include "commands.h"
 #include "ellipse.h"
 #include "rectangle.h"
 #include "ui_mainwindow.h"
@@ -43,6 +44,8 @@ MainWindow::MainWindow(QWidget* parent)
                 &MainWindow::onConnectButtonClicked);
 }
 MainWindow::~MainWindow() {
+        qDeleteAll(figures);
+        delete ui;
 }
 
 void MainWindow::onRectangleButtonClicked() {
@@ -82,6 +85,30 @@ void MainWindow::onConnectButtonClicked() {
         update();
 }
 
+void MainWindow::onSaveButtonClicked() {
+        QString fileName = QFileDialog::getSaveFileName(this,
+                                                        tr("Сохранить рисунок"),
+                                                        "",
+                                                        tr(" Files (*.png)"));
+        if (fileName.isEmpty())
+                return;
+
+        Commands::saveToImageWithMetadata(figures, connections, fileName);
+}
+
+void MainWindow::onLoadButtonClicked() {
+        QString fileName
+            = QFileDialog::getOpenFileName(this,
+                                           tr("Загрузить рисунок"),
+                                           "",
+                                           tr("PNG Files (*.png)"));
+        if (fileName.isEmpty())
+                return;
+
+        Commands::loadFromImageWithMetadata(figures, connections, fileName);
+        update();
+}
+
 void MainWindow::mousePressEvent(QMouseEvent* event) {
         if (event->button() == Qt::LeftButton) {
                 if (isDeleting) {
@@ -107,22 +134,14 @@ void MainWindow::mousePressEvent(QMouseEvent* event) {
                         }
                 } else if (isDrawing) {
                         startPoint = event->pos();
-                        if (auto rect = dynamic_cast<Rectangle*>(
-                                currentFigure)) {
-                                rect->setTopLeft(startPoint);
-                                rect->setBottomRight(startPoint);
-                        } else if (auto ellipse = dynamic_cast<Ellipse*>(
-                                       currentFigure)) {
-                                ellipse->setCenter(startPoint);
-                        } else if (auto triangle = dynamic_cast<Triangle*>(
-                                       currentFigure)) {
-                                triangle->setCenter(startPoint);
-                                triangle->setSize(0);
+
+                        if (currentFigure) {
+                                currentFigure->initialize(startPoint);
                         }
                 } else if (isConnecting) {
                         IFigure* clickedFigure = nullptr;
 
-                        for (auto figure : std::as_const(figures)) {
+                        for (auto& figure : figures) {
                                 if (figure->contains(event->pos())) {
                                         clickedFigure = figure;
                                         break;
@@ -143,10 +162,11 @@ void MainWindow::mousePressEvent(QMouseEvent* event) {
                                 startConnectionFigure = nullptr;
                                 isConnecting = false;
                         }
+
                         update();
                 } else if (isMoving) {
                         movingFigure = nullptr;
-                        for (auto figure : std::as_const(figures)) {
+                        for (auto& figure : figures) {
                                 if (figure->contains(event->pos())) {
                                         movingFigure = figure;
                                         moveStartPos = event->pos();
@@ -174,25 +194,13 @@ void MainWindow::mousePressEvent(QMouseEvent* event) {
 
 void MainWindow::mouseMoveEvent(QMouseEvent* event) {
         if (isDrawing) {
-                if (auto rect = dynamic_cast<Rectangle*>(currentFigure)) {
-                        rect->setBottomRight(event->pos());
-                } else if (auto ellipse = dynamic_cast<Ellipse*>(
-                               currentFigure)) {
-                        QPoint center = startPoint;
-                        int radiusX = abs(center.x() - event->pos().x());
-                        int radiusY = abs(center.y() - event->pos().y());
-                        ellipse->setRadiusX(radiusX);
-                        ellipse->setRadiusY(radiusY);
-                } else if (auto triangle = dynamic_cast<Triangle*>(
-                               currentFigure)) {
-                        int size = static_cast<int>(
-                            QPointF(startPoint).manhattanLength()
-                            - QPointF(event->pos()).manhattanLength());
-                        triangle->setSize(size);
+                if (currentFigure) {
+                        currentFigure->updateShape(event->pos());
                 }
                 update();
         } else if (isConnecting && startConnectionFigure) {
                 connectionCursor = event->pos();
+                update();
         } else if (isMoving && movingFigure) {
                 QPoint offset = event->pos() - moveStartPos;
                 movingFigure->move(offset);
@@ -227,7 +235,7 @@ void MainWindow::paintEvent(QPaintEvent* event) {
                 figure->draw(painter);
         }
 
-        painter.setPen(Qt::black);
+        painter.setPen(QPen(Qt::black, 2));
         for (const auto& connection : std::as_const(connections)) {
                 IFigure* start = connection.first;
                 IFigure* end = connection.second;
@@ -237,156 +245,14 @@ void MainWindow::paintEvent(QPaintEvent* event) {
         }
 
         if (isConnecting && startConnectionFigure) {
-                painter.setPen(Qt::DashLine);
-                if (connectionCursor != QPoint()) {
-                        QPoint startPoint = startConnectionFigure->getCenter();
-                        painter.drawLine(startPoint, connectionCursor);
-                }
+                QPoint startPoint = startConnectionFigure->getCenter();
+                painter.setPen(QPen(Qt::black, 2));
+                painter.drawLine(startPoint, connectionCursor);
         }
 
         if (isDrawing && currentFigure) {
                 currentFigure->draw(painter);
         }
-}
-
-void MainWindow::onSaveButtonClicked() {
-        QString fileName
-            = QFileDialog::getSaveFileName(this,
-                                           tr("Сохранить рисунок"),
-                                           "",
-                                           tr("JSON Files (*.json)"));
-        if (fileName.isEmpty())
-                return;
-
-        saveFiguresToJson(fileName);
-}
-
-void MainWindow::onLoadButtonClicked() {
-        QString fileName
-            = QFileDialog::getOpenFileName(this,
-                                           tr("Загрузить рисунок"),
-                                           "",
-                                           tr("JSON Files (*.json)"));
-        if (fileName.isEmpty())
-                return;
-
-        loadFiguresFromJson(fileName);
-}
-
-void MainWindow::saveFiguresToJson(const QString& fileName) {
-        QJsonObject rootObject;
-
-        QJsonArray figuresArray;
-
-        for (const auto& figure : std::as_const(figures)) {
-                QJsonObject figureObject;
-
-                if (auto rect = dynamic_cast<Rectangle*>(figure)) {
-                        figureObject["type"] = "rectangle";
-                        figureObject["topLeft"]
-                            = QJsonArray{rect->getTopLeft().x(),
-                                         rect->getTopLeft().y()};
-                        figureObject["bottomRight"]
-                            = QJsonArray{rect->getBottomRight().x(),
-                                         rect->getBottomRight().y()};
-                } else if (auto ellipse = dynamic_cast<Ellipse*>(figure)) {
-                        figureObject["type"] = "ellipse";
-                        figureObject["center"]
-                            = QJsonArray{ellipse->getCenter().x(),
-                                         ellipse->getCenter().y()};
-                        figureObject["radiusX"] = ellipse->getRadiusX();
-                        figureObject["radiusY"] = ellipse->getRadiusY();
-                } else if (auto triangle = dynamic_cast<Triangle*>(figure)) {
-                        figureObject["type"] = "triangle";
-                        figureObject["center"]
-                            = QJsonArray{triangle->getCenter().x(),
-                                         triangle->getCenter().y()};
-                        figureObject["size"] = triangle->getSize();
-                }
-
-                figuresArray.append(figureObject);
-        }
-
-        QJsonArray connectionsArray;
-
-        for (const auto& connection : std::as_const(connections)) {
-                QJsonObject connectionObject;
-                int startIdx = figures.indexOf(connection.first);
-                int endIdx = figures.indexOf(connection.second);
-
-                if (startIdx != -1 && endIdx != -1) {
-                        connectionObject["startIndex"] = startIdx;
-                        connectionObject["endIndex"] = endIdx;
-                        connectionsArray.append(connectionObject);
-                }
-        }
-
-        rootObject["figures"] = figuresArray;
-        rootObject["connections"] = connectionsArray;
-
-        QFile file(fileName);
-        if (file.open(QIODevice::WriteOnly)) {
-                QJsonDocument doc(rootObject);
-                file.write(doc.toJson());
-        }
-}
-
-void MainWindow::loadFiguresFromJson(const QString& fileName) {
-        QFile file(fileName);
-        if (!file.open(QIODevice::ReadOnly)) {
-                return;
-        }
-
-        QByteArray data = file.readAll();
-        QJsonDocument doc = QJsonDocument::fromJson(data);
-        QJsonObject rootObject = doc.object();
-
-        QJsonArray figuresArray = rootObject["figures"].toArray();
-        figures.clear();
-
-        for (const QJsonValue& value : std::as_const(figuresArray)) {
-                QJsonObject figureObject = value.toObject();
-                QString type = figureObject["type"].toString();
-
-                if (type == "rectangle") {
-                        QPoint topLeft(
-                            figureObject["topLeft"].toArray()[0].toInt(),
-                            figureObject["topLeft"].toArray()[1].toInt());
-                        QPoint bottomRight(
-                            figureObject["bottomRight"].toArray()[0].toInt(),
-                            figureObject["bottomRight"].toArray()[1].toInt());
-                        figures.append(new Rectangle(topLeft, bottomRight));
-                } else if (type == "ellipse") {
-                        QPoint
-                            center(figureObject["center"].toArray()[0].toInt(),
-                                   figureObject["center"].toArray()[1].toInt());
-                        int radiusX = figureObject["radiusX"].toInt();
-                        int radiusY = figureObject["radiusY"].toInt();
-                        figures.append(new Ellipse(center, radiusX, radiusY));
-                } else if (type == "triangle") {
-                        QPoint
-                            center(figureObject["center"].toArray()[0].toInt(),
-                                   figureObject["center"].toArray()[1].toInt());
-                        int size = figureObject["size"].toInt();
-                        figures.append(new Triangle(center, size));
-                }
-        }
-
-        QJsonArray connectionsArray = rootObject["connections"].toArray();
-        for (const QJsonValue& value : std::as_const(connectionsArray)) {
-                QJsonObject connectionObject = value.toObject();
-                int startIdx = connectionObject["startIndex"].toInt();
-                int endIdx = connectionObject["endIndex"].toInt();
-
-                if (startIdx >= 0 && startIdx < figures.size() && endIdx >= 0
-                    && endIdx < figures.size()) {
-                        IFigure* startFigure = figures[startIdx];
-                        IFigure* endFigure = figures[endIdx];
-                        connections.append(qMakePair(startFigure, endFigure));
-                }
-        }
-
-        update();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* event) {

@@ -1,18 +1,18 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QFile>
 #include <QFileDialog>
-#include <QList>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+//#include <QList>
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QPainter>
 #include "IFigure.h"
 
-#include <QFile>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
 namespace Ui {
 class MainWindow;
 }
@@ -23,8 +23,6 @@ class MainWindow : public QMainWindow {
 public:
         explicit MainWindow(QWidget *parent = nullptr);
         ~MainWindow();
-        void saveFiguresToJson(const QString &fileName);
-        void loadFiguresFromJson(const QString &fileName);
 
 protected:
         void mousePressEvent(QMouseEvent *event) override;
@@ -45,7 +43,8 @@ private slots:
 
 private:
         Ui::MainWindow *ui;
-        QList<IFigure *> figures;
+        QVector<IFigure *> figures;
+        //QList<IFigure *> figures;
         QVector<QPair<IFigure *, IFigure *>> connections;
 
         IFigure *movingFigure = nullptr;

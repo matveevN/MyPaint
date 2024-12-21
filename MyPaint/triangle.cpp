@@ -1,4 +1,6 @@
 #include "Triangle.h"
+#include <qjsonarray.h>
+#include <qjsonobject.h>
 
 Triangle::Triangle(const QPoint& center, int size)
 : center(center)
@@ -65,4 +67,32 @@ bool Triangle::contains(const QPoint& point) const {
 
 void Triangle::move(const QPoint& offset) {
         center += offset;
+}
+
+QString Triangle::getType() const {
+        return "triangle";
+}
+
+QJsonObject Triangle::toJson() const {
+        QJsonObject json;
+        json["type"] = getType();
+        json["center"] = QJsonArray{center.x(), center.y()};
+        json["size"] = size;
+        return json;
+}
+
+void Triangle::fromJson(const QJsonObject& json) {
+        center = QPoint(json["center"].toArray()[0].toInt(),
+                        json["center"].toArray()[1].toInt());
+        size = json["size"].toInt();
+}
+
+void Triangle::initialize(const QPoint& startPoint) {
+        center = startPoint;
+        size = 0;
+}
+
+void Triangle::updateShape(const QPoint& currentPoint) {
+        size = static_cast<int>(QPointF(center).manhattanLength()
+                                - QPointF(currentPoint).manhattanLength());
 }
