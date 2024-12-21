@@ -19,6 +19,14 @@ public:
         void move(const QPoint& offset) override;
         void setCenter(const QPoint& newCenter);
         void setSize(int newSize);
+        void initialize(const QPoint& startPoint) override;
+
+        void updateShape(const QPoint& currentPoint) override;
+
+        QJsonObject toJson() const override;
+        void fromJson(const QJsonObject& json) override;
+
+        QString getType() const override;
 
 private:
         QPoint center;
