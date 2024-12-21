@@ -10,12 +10,12 @@
 
 class Commands {
 public:
-        Commands() = default;
-        Commands(const Commands&) = default;
-        Commands(Commands&&) noexcept = default;
-        Commands& operator=(const Commands&) = default;
-        Commands& operator=(Commands&&) noexcept = default;
-        ~Commands() = default;
+        Commands();
+        Commands(const Commands&);
+        Commands(Commands&&) noexcept;
+        Commands& operator=(const Commands&);
+        Commands& operator=(Commands&&) noexcept;
+        ~Commands();
         static void saveToImageWithMetadata(
             const QVector<IFigure*>& figures,
             const QVector<QPair<IFigure*, IFigure*>>& connections,

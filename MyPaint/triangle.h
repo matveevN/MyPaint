@@ -9,6 +9,12 @@ class Triangle : public IFigure {
 public:
         Triangle(const QPoint& center, int size);
 
+        Triangle(const Triangle&);
+        Triangle(Triangle&&) noexcept;
+        Triangle& operator=(const Triangle&);
+        Triangle& operator=(Triangle&&) noexcept;
+        ~Triangle();
+
         QPoint getCenter() const override;
         int getSize() const;
 

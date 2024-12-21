@@ -7,11 +7,11 @@
 class Ellipse : public IFigure {
 public:
         Ellipse(const QPoint& center, int radiusX, int radiusY);
-        Ellipse(const Ellipse&) = default;
-        Ellipse(Ellipse&&) noexcept = default;
-        Ellipse& operator=(const Ellipse&) = default;
-        Ellipse& operator=(Ellipse&&) noexcept = default;
-        ~Ellipse() = default;
+        Ellipse(const Ellipse&);
+        Ellipse(Ellipse&&) noexcept;
+        Ellipse& operator=(const Ellipse&);
+        Ellipse& operator=(Ellipse&&) noexcept;
+        ~Ellipse();
 
         QPoint getCenter() const override;
 

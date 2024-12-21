@@ -7,6 +7,12 @@ Triangle::Triangle(const QPoint& center, int size)
 , size(size) {
 }
 
+Triangle::Triangle(const Triangle&) = default;
+Triangle::Triangle(Triangle&&) noexcept = default;
+Triangle& Triangle::operator=(const Triangle&) = default;
+Triangle& Triangle::operator=(Triangle&&) noexcept = default;
+Triangle::~Triangle() = default;
+
 int Triangle::getSize() const {
         return size;
 }

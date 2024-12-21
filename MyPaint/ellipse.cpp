@@ -8,6 +8,12 @@ Ellipse::Ellipse(const QPoint& center, int radiusX, int radiusY)
 , radiusY(radiusY) {
 }
 
+Ellipse::Ellipse(const Ellipse&) = default;
+Ellipse::Ellipse(Ellipse&&) noexcept = default;
+Ellipse& Ellipse::operator=(const Ellipse&) = default;
+Ellipse& Ellipse::operator=(Ellipse&&) noexcept = default;
+Ellipse::~Ellipse() = default;
+
 QPoint Ellipse::getCenter() const {
         return center;
 }

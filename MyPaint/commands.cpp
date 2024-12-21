@@ -3,6 +3,13 @@
 #include "ellipse.h"
 #include "rectangle.h"
 
+Commands::Commands() = default;
+Commands::Commands(const Commands&) = default;
+Commands::Commands(Commands&&) noexcept = default;
+Commands& Commands::operator=(const Commands&) = default;
+Commands& Commands::operator=(Commands&&) noexcept = default;
+Commands::~Commands() = default;
+
 void Commands::saveToImageWithMetadata(
     const QVector<IFigure*>& figures,
     const QVector<QPair<IFigure*, IFigure*>>& connections,

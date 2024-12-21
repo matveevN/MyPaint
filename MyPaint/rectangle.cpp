@@ -7,6 +7,12 @@ Rectangle::Rectangle(const QPoint& topLeft, const QPoint& bottomRight)
 , bottomRight(bottomRight) {
 }
 
+Rectangle::Rectangle(const Rectangle&) = default;
+Rectangle::Rectangle(Rectangle&&) noexcept = default;
+Rectangle& Rectangle::operator=(const Rectangle&) = default;
+Rectangle& Rectangle::operator=(Rectangle&&) noexcept = default;
+Rectangle::~Rectangle() = default;
+
 QPoint Rectangle::getTopLeft() const {
         return topLeft;
 }
