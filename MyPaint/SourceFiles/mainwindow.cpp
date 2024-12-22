@@ -3,49 +3,99 @@
 #include "./shapes/rectangle.h"
 #include "./shapes/triangle.h"
 #include "./utils/file_manager.h"
-#include "SourceFiles/ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget* parent)
-: QMainWindow(parent)
-, _ui(new Ui::MainWindow) {
-        _ui->setupUi(this);
+: QMainWindow(parent) {
+        setFixedSize(800, 600);
+        QWidget* centralWidget = new QWidget(this);
+        setCentralWidget(centralWidget);
 
-        connect(_ui->rectangleButton,
+        QVBoxLayout* mainLayout = new QVBoxLayout(centralWidget);
+
+        QHBoxLayout* buttonLayout = new QHBoxLayout();
+
+        QPushButton* rectangleButton = new QPushButton("Прямоугольник", this);
+        QPushButton* ellipseButton = new QPushButton("Эллипс", this);
+        QPushButton* triangleButton = new QPushButton("Треугольник", this);
+        QPushButton* moveButton = new QPushButton("Переместить", this);
+        QPushButton* deleteButton = new QPushButton("Удалить", this);
+        QPushButton* saveButton = new QPushButton("Сохранить", this);
+        QPushButton* loadButton = new QPushButton("Загрузить", this);
+        QPushButton* connectButton = new QPushButton("Связь", this);
+
+        QString buttonStyle = R"(
+        QPushButton {
+            background-color: #333333; 
+            color: white; 
+            border-radius: 5px; 
+            padding: 5px;
+        }
+        QPushButton:hover {
+            background-color: #444444;
+        }
+        QPushButton:pressed {
+            background-color: #555555;
+        }
+    )";
+
+        rectangleButton->setStyleSheet(buttonStyle);
+        ellipseButton->setStyleSheet(buttonStyle);
+        triangleButton->setStyleSheet(buttonStyle);
+        moveButton->setStyleSheet(buttonStyle);
+        deleteButton->setStyleSheet(buttonStyle);
+        saveButton->setStyleSheet(buttonStyle);
+        loadButton->setStyleSheet(buttonStyle);
+        connectButton->setStyleSheet(buttonStyle);
+
+        buttonLayout->addWidget(rectangleButton);
+        buttonLayout->addWidget(triangleButton);
+        buttonLayout->addWidget(ellipseButton);
+        buttonLayout->addWidget(connectButton);
+        buttonLayout->addWidget(moveButton);
+        buttonLayout->addWidget(deleteButton);
+        buttonLayout->addWidget(loadButton);
+        buttonLayout->addWidget(saveButton);
+
+        mainLayout->addLayout(buttonLayout);
+        mainLayout->addStretch();
+
+        centralWidget->setLayout(mainLayout);
+
+        connect(rectangleButton,
                 &QPushButton::clicked,
                 this,
                 &MainWindow::onRectangleButtonClicked);
-        connect(_ui->ellipseButton,
+        connect(ellipseButton,
                 &QPushButton::clicked,
                 this,
                 &MainWindow::onEllipseButtonClicked);
-        connect(_ui->triangleButton,
+        connect(triangleButton,
                 &QPushButton::clicked,
                 this,
                 &MainWindow::onTriangleButtonClicked);
-        connect(_ui->moveButton,
+        connect(moveButton,
                 &QPushButton::clicked,
                 this,
                 &MainWindow::onMoveButtonClicked);
-        connect(_ui->deleteButton,
+        connect(deleteButton,
                 &QPushButton::clicked,
                 this,
                 &MainWindow::onDeleteButtonClicked);
-        connect(_ui->saveButton,
+        connect(saveButton,
                 &QPushButton::clicked,
                 this,
                 &MainWindow::onSaveButtonClicked);
-        connect(_ui->loadButton,
+        connect(loadButton,
                 &QPushButton::clicked,
                 this,
                 &MainWindow::onLoadButtonClicked);
-        connect(_ui->connectButton,
+        connect(connectButton,
                 &QPushButton::clicked,
                 this,
                 &MainWindow::onConnectButtonClicked);
 }
 MainWindow::~MainWindow() {
         qDeleteAll(_figures);
-        delete _ui;
 }
 
 void MainWindow::onRectangleButtonClicked() {

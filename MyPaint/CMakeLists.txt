@@ -16,7 +16,7 @@ set(PROJECT_SOURCES
         SourceFiles/main.cpp
         SourceFiles/mainwindow.cpp
         SourceFiles/mainwindow.h
-        SourceFiles/mainwindow.ui
+
         SourceFiles/shapes/IFigure.h
         SourceFiles/shapes/rectangle.h
         SourceFiles/shapes/rectangle.cpp

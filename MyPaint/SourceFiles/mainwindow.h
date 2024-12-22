@@ -2,14 +2,16 @@
 
 #include <QFile>
 #include <QFileDialog>
+#include <QHBoxLayout>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-//#include <QList>
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QPushButton>
+#include <QVBoxLayout>
 #include "./shapes/IFigure.h"
 
 namespace Ui {
@@ -41,9 +43,8 @@ private slots:
         void onConnectButtonClicked();
 
 private:
-        Ui::MainWindow *_ui;
         QVector<IFigure *> _figures;
-        //QList<IFigure *> figures;
+
         QVector<QPair<IFigure *, IFigure *>> _connections;
 
         IFigure *_movingFigure = nullptr;
