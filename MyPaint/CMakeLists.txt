@@ -26,6 +26,7 @@ set(PROJECT_SOURCES
         SourceFiles/shapes/triangle.cpp
         SourceFiles/utils/file_manager.h
         SourceFiles/utils/file_manager.cpp
+        SourceFiles/TODO.txt
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
