@@ -1,5 +1,4 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include <QFile>
 #include <QFileDialog>
@@ -17,7 +16,7 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow {
+class MainWindow final : public QMainWindow {
         Q_OBJECT
 
 public:
@@ -64,5 +63,3 @@ private:
         bool _isDeleting = false;
         bool _isConnecting = false;
 };
-
-#endif // MAINWINDOW_H

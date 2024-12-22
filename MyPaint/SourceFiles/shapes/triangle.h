@@ -1,5 +1,4 @@
-#ifndef TRIANGLE_H
-#define TRIANGLE_H
+#pragma once
 
 #include <QPainter>
 #include <QPoint>
@@ -40,5 +39,3 @@ private:
 
         void calculateVertices(QPoint& p1, QPoint& p2, QPoint& p3) const;
 };
-
-#endif // TRIANGLE_H

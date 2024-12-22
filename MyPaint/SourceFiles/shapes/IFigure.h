@@ -1,5 +1,4 @@
-#ifndef IFIGURE_H
-#define IFIGURE_H
+#pragma once
 
 #include <qpainter.h>
 class IFigure {
@@ -22,5 +21,3 @@ public:
 
         virtual ~IFigure() = default;
 };
-
-#endif // IFIGURE_H

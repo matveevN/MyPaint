@@ -1,5 +1,4 @@
-#ifndef ELLIPSE_H
-#define ELLIPSE_H
+#pragma once
 
 #include <QPoint>
 #include "IFigure.h"
@@ -41,5 +40,3 @@ private:
         int _radiusX;
         int _radiusY;
 };
-
-#endif // ELLIPSE_H

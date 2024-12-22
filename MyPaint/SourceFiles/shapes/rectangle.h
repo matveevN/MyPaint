@@ -1,5 +1,4 @@
-#ifndef RECTANGLE_H
-#define RECTANGLE_H
+#pragma once
 
 #include <QPainter>
 #include <QPoint>
@@ -42,5 +41,3 @@ private:
         QPoint _topLeft;
         QPoint _bottomRight;
 };
-
-#endif // RECTANGLE_H

@@ -1,5 +1,4 @@
-#ifndef FILE_MANAGER_H
-#define FILE_MANAGER_H
+#pragma once
 
 #include <QFile>
 #include <QJsonArray>
@@ -8,7 +7,7 @@
 #include <QVector>
 #include ".././shapes/IFigure.h"
 
-class FileManager {
+class FileManager final {
 public:
         FileManager();
         FileManager(const FileManager&);
@@ -25,5 +24,3 @@ public:
             QVector<QPair<IFigure*, IFigure*>>& connections,
             const QString& fileName);
 };
-
-#endif // FILE_MANAGER_H
