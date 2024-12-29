@@ -1,7 +1,7 @@
 #include "file_manager.h"
-#include ".././shapes/ellipse.h"
-#include ".././shapes/rectangle.h"
-#include ".././shapes/triangle.h"
+#include "ellipse.h"
+#include "rectangle.h"
+#include "triangle.h"
 
 void FileManager::saveToImageWithMetadata(
     const QVector<IFigure*>& figures,

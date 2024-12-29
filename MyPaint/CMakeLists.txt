@@ -34,12 +34,18 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
-    else()
-        add_executable(MyPaint
-            ${PROJECT_SOURCES}
-        )
-    endif()
+else()
+    add_executable(MyPaint
+        ${PROJECT_SOURCES}
+    )
+endif()
 
+# Теперь можно указать include-директории
+target_include_directories(MyPaint PRIVATE
+    ${CMAKE_SOURCE_DIR}/SourceFiles
+    ${CMAKE_SOURCE_DIR}/SourceFiles/shapes
+    ${CMAKE_SOURCE_DIR}/SourceFiles/utils
+)
 
 target_link_libraries(MyPaint PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 

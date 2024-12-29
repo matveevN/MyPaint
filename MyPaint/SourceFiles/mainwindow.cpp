@@ -1,8 +1,8 @@
 #include "mainwindow.h"
-#include "./shapes/ellipse.h"
-#include "./shapes/rectangle.h"
-#include "./shapes/triangle.h"
-#include "./utils/file_manager.h"
+#include "ellipse.h"
+#include "file_manager.h"
+#include "rectangle.h"
+#include "triangle.h"
 
 MainWindow::MainWindow(QWidget* parent)
 : QMainWindow(parent) {

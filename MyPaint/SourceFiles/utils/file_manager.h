@@ -5,7 +5,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QVector>
-#include ".././shapes/IFigure.h"
+#include "IFigure.h"
 
 class FileManager final {
 public:
