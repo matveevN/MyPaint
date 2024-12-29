@@ -33,6 +33,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(MyPaint
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        SourceFiles/shapes/figure_factory.h SourceFiles/shapes/figure_factory.cpp
     )
 else()
     add_executable(MyPaint

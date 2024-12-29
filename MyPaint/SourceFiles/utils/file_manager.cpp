@@ -1,7 +1,5 @@
 #include "file_manager.h"
-#include "ellipse.h"
-#include "rectangle.h"
-#include "triangle.h"
+#include "figure_factory.h"
 
 void FileManager::saveToImageWithMetadata(
     const QVector<IFigure*>& figures,
@@ -91,14 +89,8 @@ void FileManager::loadFromImageWithMetadata(
                 QJsonObject figureObject = value.toObject();
                 QString type = figureObject["type"].toString();
 
-                IFigure* figure = nullptr;
-                if (type == "rectangle") {
-                        figure = new Rectangle(QPoint(), QPoint());
-                } else if (type == "ellipse") {
-                        figure = new Ellipse(QPoint(), 0, 0);
-                } else if (type == "triangle") {
-                        figure = new Triangle(QPoint(), 0);
-                }
+                IFigure* figure = FigureFactory::createFigure(
+                    type); // Используем фабричный метод
 
                 if (figure) {
                         figure->fromJson(figureObject);
