@@ -3,13 +3,6 @@
 #include ".././shapes/rectangle.h"
 #include ".././shapes/triangle.h"
 
-FileManager::FileManager() = default;
-FileManager::FileManager(const FileManager&) = default;
-FileManager::FileManager(FileManager&&) noexcept = default;
-FileManager& FileManager::operator=(const FileManager&) = default;
-FileManager& FileManager::operator=(FileManager&&) noexcept = default;
-FileManager::~FileManager() = default;
-
 void FileManager::saveToImageWithMetadata(
     const QVector<IFigure*>& figures,
     const QVector<QPair<IFigure*, IFigure*>>& connections,

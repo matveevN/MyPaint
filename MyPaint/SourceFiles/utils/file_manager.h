@@ -9,12 +9,6 @@
 
 class FileManager final {
 public:
-        FileManager();
-        FileManager(const FileManager&);
-        FileManager(FileManager&&) noexcept;
-        FileManager& operator=(const FileManager&);
-        FileManager& operator=(FileManager&&) noexcept;
-        ~FileManager();
         static void saveToImageWithMetadata(
             const QVector<IFigure*>& figures,
             const QVector<QPair<IFigure*, IFigure*>>& connections,
