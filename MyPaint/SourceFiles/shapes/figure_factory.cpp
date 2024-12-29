@@ -3,6 +3,7 @@
 #include "rectangle.h"
 #include "triangle.h"
 
+namespace Shapes {
 IFigure* FigureFactory::createFigure(const QString& type) {
         if (type == "rectangle") {
                 return new Rectangle(QPoint(), QPoint());
@@ -13,3 +14,4 @@ IFigure* FigureFactory::createFigure(const QString& type) {
         }
         return nullptr;
 }
+} // namespace Shapes

@@ -2,6 +2,8 @@
 #include <qjsonarray.h>
 #include <qjsonobject.h>
 
+namespace Shapes {
+
 Ellipse::Ellipse(const QPoint& center, int radiusX, int radiusY)
 : _center(center)
 , _radiusX(radiusX)
@@ -62,3 +64,4 @@ void Ellipse::updateShape(const QPoint& currentPoint) {
         _radiusX = std::abs(_center.x() - currentPoint.x());
         _radiusY = std::abs(_center.y() - currentPoint.y());
 }
+} // namespace Shapes

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <qpainter.h>
+namespace Shapes {
 class IFigure {
 public:
         [[nodiscard]] virtual QPoint getCenter() const = 0;
@@ -21,3 +22,4 @@ public:
 
         virtual ~IFigure() = default;
 };
+} // namespace Shapes

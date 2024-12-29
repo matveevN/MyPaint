@@ -1,7 +1,7 @@
 #include "rectangle.h"
 #include <qjsonarray.h>
 #include <qjsonobject.h>
-
+namespace Shapes {
 Rectangle::Rectangle(const QPoint& topLeft, const QPoint& bottomRight)
 : _topLeft(topLeft)
 , _bottomRight(bottomRight) {
@@ -65,3 +65,4 @@ void Rectangle::initialize(const QPoint& startPoint) {
 void Rectangle::updateShape(const QPoint& currentPoint) {
         setBottomRight(currentPoint);
 }
+} // namespace Shapes

@@ -4,7 +4,8 @@
 #include <QPoint>
 #include "IFigure.h"
 
-class Triangle final : public IFigure {
+namespace Shapes {
+class Triangle final : public Shapes::IFigure {
 public:
         Triangle(const QPoint& center, int size);
 
@@ -34,3 +35,4 @@ private:
 
         void calculateVertices(QPoint& p1, QPoint& p2, QPoint& p3) const;
 };
+} // namespace Shapes

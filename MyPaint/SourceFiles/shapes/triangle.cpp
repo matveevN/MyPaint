@@ -2,6 +2,7 @@
 #include <qjsonarray.h>
 #include <qjsonobject.h>
 
+namespace Shapes {
 Triangle::Triangle(const QPoint& center, int size)
 : _center(center)
 , _size(size) {
@@ -86,3 +87,4 @@ void Triangle::updateShape(const QPoint& currentPoint) {
         _size = static_cast<int>(QPointF(_center).manhattanLength()
                                  - QPointF(currentPoint).manhattanLength());
 }
+} // namespace Shapes

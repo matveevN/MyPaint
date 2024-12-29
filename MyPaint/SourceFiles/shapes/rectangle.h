@@ -5,7 +5,8 @@
 #include <QRect>
 #include "IFigure.h"
 
-class Rectangle final : public IFigure {
+namespace Shapes {
+class Rectangle final : public Shapes::IFigure {
 public:
         Rectangle(const QPoint& topLeft, const QPoint& bottomRight);
 
@@ -32,3 +33,4 @@ private:
         QPoint _topLeft;
         QPoint _bottomRight;
 };
+} // namespace Shapes

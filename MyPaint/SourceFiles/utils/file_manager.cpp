@@ -1,9 +1,10 @@
 #include "file_manager.h"
 #include "figure_factory.h"
 
+namespace Utils {
 void FileManager::saveToImageWithMetadata(
-    const QVector<IFigure*>& figures,
-    const QVector<QPair<IFigure*, IFigure*>>& connections,
+    const QVector<Shapes::IFigure*>& figures,
+    const QVector<QPair<Shapes::IFigure*, Shapes::IFigure*>>& connections,
     const QString& fileName) {
         QPixmap canvas(800, 600);
         canvas.fill(Qt::white);
@@ -15,8 +16,8 @@ void FileManager::saveToImageWithMetadata(
 
         painter.setPen(Qt::black);
         for (const auto& connection : connections) {
-                IFigure* startFigure = connection.first;
-                IFigure* endFigure = connection.second;
+                Shapes::IFigure* startFigure = connection.first;
+                Shapes::IFigure* endFigure = connection.second;
 
                 if (startFigure && endFigure) {
                         painter.drawLine(startFigure->getCenter(),
@@ -65,8 +66,8 @@ void FileManager::saveToImageWithMetadata(
 }
 
 void FileManager::loadFromImageWithMetadata(
-    QVector<IFigure*>& figures,
-    QVector<QPair<IFigure*, IFigure*>>& connections,
+    QVector<Shapes::IFigure*>& figures,
+    QVector<QPair<Shapes::IFigure*, Shapes::IFigure*>>& connections,
     const QString& fileName) {
         QImage image(fileName);
         if (image.isNull()) {
@@ -89,7 +90,7 @@ void FileManager::loadFromImageWithMetadata(
                 QJsonObject figureObject = value.toObject();
                 QString type = figureObject["type"].toString();
 
-                IFigure* figure = FigureFactory::createFigure(
+                Shapes::IFigure* figure = Shapes::FigureFactory::createFigure(
                     type); // Используем фабричный метод
 
                 if (figure) {
@@ -112,3 +113,4 @@ void FileManager::loadFromImageWithMetadata(
                 }
         }
 }
+} // namespace Utils

@@ -43,14 +43,14 @@ private slots:
         void onConnectButtonClicked();
 
 private:
-        QVector<IFigure *> _figures;
+        QVector<Shapes::IFigure *> _figures;
 
-        QVector<QPair<IFigure *, IFigure *>> _connections;
+        QVector<QPair<Shapes::IFigure *, Shapes::IFigure *>> _connections;
 
-        IFigure *_movingFigure = nullptr;
-        IFigure *_selectedFigure = nullptr;
-        IFigure *_currentFigure = nullptr;
-        IFigure *_startConnectionFigure = nullptr;
+        Shapes::IFigure *_movingFigure = nullptr;
+        Shapes::IFigure *_selectedFigure = nullptr;
+        Shapes::IFigure *_currentFigure = nullptr;
+        Shapes::IFigure *_startConnectionFigure = nullptr;
 
         QPoint _startPoint;
         QPoint _moveStartPos;

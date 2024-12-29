@@ -99,17 +99,17 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::onRectangleButtonClicked() {
-        _currentFigure = new Rectangle(QPoint(), QPoint());
+        _currentFigure = new Shapes::Rectangle(QPoint(), QPoint());
         _isDrawing = true;
 }
 
 void MainWindow::onEllipseButtonClicked() {
-        _currentFigure = new Ellipse(QPoint(), 0, 0);
+        _currentFigure = new Shapes::Ellipse(QPoint(), 0, 0);
         _isDrawing = true;
 }
 
 void MainWindow::onTriangleButtonClicked() {
-        _currentFigure = new Triangle(QPoint(), 0);
+        _currentFigure = new Shapes::Triangle(QPoint(), 0);
         _isDrawing = true;
 }
 
@@ -137,7 +137,9 @@ void MainWindow::onSaveButtonClicked() {
         if (fileName.isEmpty())
                 return;
 
-        FileManager::saveToImageWithMetadata(_figures, _connections, fileName);
+        Utils::FileManager::saveToImageWithMetadata(_figures,
+                                                    _connections,
+                                                    fileName);
 }
 
 void MainWindow::onLoadButtonClicked() {
@@ -149,7 +151,9 @@ void MainWindow::onLoadButtonClicked() {
         if (fileName.isEmpty())
                 return;
 
-        FileManager::loadFromImageWithMetadata(_figures, _connections, fileName);
+        Utils::FileManager::loadFromImageWithMetadata(_figures,
+                                                      _connections,
+                                                      fileName);
         update();
 }
 
@@ -183,7 +187,7 @@ void MainWindow::mousePressEvent(QMouseEvent* event) {
                                 _currentFigure->initialize(_startPoint);
                         }
                 } else if (_isConnecting) {
-                        IFigure* clickedFigure = nullptr;
+                        Shapes::IFigure* clickedFigure = nullptr;
 
                         for (auto& figure : _figures) {
                                 if (figure->contains(event->pos())) {
@@ -281,8 +285,8 @@ void MainWindow::paintEvent(QPaintEvent* event) {
 
         painter.setPen(QPen(Qt::black, 2));
         for (const auto& connection : std::as_const(_connections)) {
-                IFigure* start = connection.first;
-                IFigure* end = connection.second;
+                Shapes::IFigure* start = connection.first;
+                Shapes::IFigure* end = connection.second;
                 if (start && end) {
                         painter.drawLine(start->getCenter(), end->getCenter());
                 }

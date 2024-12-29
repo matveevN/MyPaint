@@ -3,6 +3,7 @@
 #include <QPoint>
 #include "IFigure.h"
 
+namespace Shapes {
 class Ellipse final : public IFigure {
 public:
         Ellipse(const QPoint& center, int radiusX, int radiusY);
@@ -31,3 +32,4 @@ private:
         int _radiusX;
         int _radiusY;
 };
+} // namespace Shapes

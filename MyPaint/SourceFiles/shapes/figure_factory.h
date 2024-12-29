@@ -1,9 +1,10 @@
 #pragma once
 
 #include "IFigure.h"
-
+namespace Shapes {
 class FigureFactory {
 public:
         //  фабричный метод для создания фигур
-        static IFigure* createFigure(const QString& type);
+        [[nodiscard]] static IFigure* createFigure(const QString& type);
 };
+} // namespace Shapes
