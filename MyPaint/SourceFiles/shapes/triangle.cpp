@@ -7,26 +7,10 @@ Triangle::Triangle(const QPoint& center, int size)
 , _size(size) {
 }
 
-Triangle::Triangle(const Triangle&) = default;
-Triangle::Triangle(Triangle&&) noexcept = default;
-Triangle& Triangle::operator=(const Triangle&) = default;
-Triangle& Triangle::operator=(Triangle&&) noexcept = default;
 Triangle::~Triangle() = default;
-
-int Triangle::getSize() const {
-        return _size;
-}
-
-void Triangle::setSize(int newSize) {
-        _size = newSize;
-}
 
 QPoint Triangle::getCenter() const {
         return _center;
-}
-
-void Triangle::setCenter(const QPoint& newCenter) {
-        _center = newCenter;
 }
 
 ///проблема к центру треугольника

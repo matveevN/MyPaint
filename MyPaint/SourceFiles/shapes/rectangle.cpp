@@ -7,30 +7,14 @@ Rectangle::Rectangle(const QPoint& topLeft, const QPoint& bottomRight)
 , _bottomRight(bottomRight) {
 }
 
-Rectangle::Rectangle(const Rectangle&) = default;
-Rectangle::Rectangle(Rectangle&&) noexcept = default;
-Rectangle& Rectangle::operator=(const Rectangle&) = default;
-Rectangle& Rectangle::operator=(Rectangle&&) noexcept = default;
 Rectangle::~Rectangle() = default;
-
-QPoint Rectangle::getTopLeft() const {
-        return _topLeft;
-}
 
 void Rectangle::setTopLeft(const QPoint& point) {
         _topLeft = point;
 }
 
-QPoint Rectangle::getBottomRight() const {
-        return _bottomRight;
-}
-
 void Rectangle::setBottomRight(const QPoint& bottomRight) {
         _bottomRight = bottomRight;
-}
-
-QRect Rectangle::getRect() const {
-        return QRect(_topLeft, _bottomRight);
 }
 
 QPoint Rectangle::getCenter() const {

@@ -8,24 +8,15 @@
 class Rectangle final : public IFigure {
 public:
         Rectangle(const QPoint& topLeft, const QPoint& bottomRight);
-        Rectangle(const Rectangle&);
-        Rectangle(Rectangle&&) noexcept;
-        Rectangle& operator=(const Rectangle&);
-        Rectangle& operator=(Rectangle&&) noexcept;
+
         ~Rectangle();
 
-        QRect getRect() const;
-        QPoint getBottomRight() const;
         QPoint getCenter() const override;
-        QPoint getTopLeft() const;
 
         void initialize(const QPoint& startPoint) override;
 
         void updateShape(const QPoint& currentPoint) override;
 
-        QRect boundingBox() const {
-                return QRect(_topLeft, _bottomRight);
-        }
         QString getType() const override;
 
         QJsonObject toJson() const override;
