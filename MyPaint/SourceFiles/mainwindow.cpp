@@ -115,14 +115,8 @@ void MainWindow::onTriangleButtonClicked() {
 
 void MainWindow::onMoveButtonClicked() {
         _isMoving = !_isMoving;
-        if (_isMoving) {
-                setCursor(Qt::ClosedHandCursor);
-        } else {
-                setCursor(Qt::ArrowCursor);
-        }
-        if (!_isMoving) {
-                _movingFigure = nullptr;
-        }
+        setCursor(_isMoving ? Qt::ClosedHandCursor : Qt::ArrowCursor);
+        _movingFigure = !_isMoving ? nullptr : _movingFigure;
 }
 
 void MainWindow::onDeleteButtonClicked() {

@@ -6,3 +6,9 @@
 
 умные указатели + уйти от new сделать make
 
+сделать лучше void FileManager::loadFromImageWithMetadata
+Фабрика vs Абстрактная фабрика vs Механизм регистрации типов фигур
+
+предсказатель переходов (Branch prediction)
+
+многопоточность
