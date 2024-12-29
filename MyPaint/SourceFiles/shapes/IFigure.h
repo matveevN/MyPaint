@@ -20,6 +20,8 @@ public:
 
         [[nodiscard]] virtual QString getType() const = 0;
 
+        [[nodiscard]] virtual QRect boundingRect() const = 0;
+
         virtual ~IFigure() = default;
 };
 } // namespace Shapes

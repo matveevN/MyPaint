@@ -27,6 +27,8 @@ public:
 
         void move(const QPoint& offset) override;
 
+        [[nodiscard]] QRect boundingRect() const override;
+
 private:
         QPoint _center;
         int _radiusX;

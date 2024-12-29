@@ -29,6 +29,8 @@ public:
 
         [[nodiscard]] QString getType() const override;
 
+        [[nodiscard]] QRect boundingRect() const override;
+
 private:
         QPoint _center;
         int _size;

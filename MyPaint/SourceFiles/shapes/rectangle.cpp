@@ -65,4 +65,11 @@ void Rectangle::initialize(const QPoint& startPoint) {
 void Rectangle::updateShape(const QPoint& currentPoint) {
         setBottomRight(currentPoint);
 }
+
+QRect Rectangle::boundingRect() const {
+        QRect rect(_topLeft, _bottomRight);
+
+        return rect.adjusted(-2, -2, 2, 2);
+}
+
 } // namespace Shapes

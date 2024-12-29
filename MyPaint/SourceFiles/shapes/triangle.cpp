@@ -87,4 +87,18 @@ void Triangle::updateShape(const QPoint& currentPoint) {
         _size = static_cast<int>(QPointF(_center).manhattanLength()
                                  - QPointF(currentPoint).manhattanLength());
 }
+
+QRect Triangle::boundingRect() const {
+        QPoint p1, p2, p3;
+        calculateVertices(p1, p2, p3);
+
+        int minX = std::min({p1.x(), p2.x(), p3.x()});
+        int minY = std::min({p1.y(), p2.y(), p3.y()});
+        int maxX = std::max({p1.x(), p2.x(), p3.x()});
+        int maxY = std::max({p1.y(), p2.y(), p3.y()});
+
+        QRect rect(QPoint(minX, minY), QPoint(maxX, maxY));
+
+        return rect.adjusted(-2, -2, 2, 2);
+}
 } // namespace Shapes

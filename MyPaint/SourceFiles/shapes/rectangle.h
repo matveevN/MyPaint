@@ -24,6 +24,8 @@ public:
         void fromJson(const QJsonObject& json) override;
         [[nodiscard]] bool contains(const QPoint& point) const override;
 
+        [[nodiscard]] QRect boundingRect() const override;
+
         void draw(QPainter& painter) const override;
         void setBottomRight(const QPoint& bottomRight);
         void setTopLeft(const QPoint& point);

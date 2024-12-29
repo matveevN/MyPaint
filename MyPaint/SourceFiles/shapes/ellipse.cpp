@@ -64,4 +64,13 @@ void Ellipse::updateShape(const QPoint& currentPoint) {
         _radiusX = std::abs(_center.x() - currentPoint.x());
         _radiusY = std::abs(_center.y() - currentPoint.y());
 }
+
+QRect Ellipse::boundingRect() const {
+        QRect rect(_center.x() - _radiusX,
+                   _center.y() - _radiusY,
+                   2 * _radiusX,
+                   2 * _radiusY);
+
+        return rect.adjusted(-2, -2, 2, 2);
+}
 } // namespace Shapes
