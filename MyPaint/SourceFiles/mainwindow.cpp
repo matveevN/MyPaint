@@ -157,11 +157,11 @@ void MainWindow::onLoadButtonClicked() {
                                                       _connections,
                                                       fileName);
 
-        for (const auto& figure : _figures) {
+        for (const auto& figure : std::as_const(_figures)) {
                 updateRect = updateRect.united(figure->boundingRect());
         }
 
-        for (const auto& connection : _connections) {
+        for (const auto& connection : std::as_const(_connections)) {
                 updateRect = updateRect.united(
                     QRect(connection.first->boundingRect().center(),
                           connection.second->boundingRect().center()));
