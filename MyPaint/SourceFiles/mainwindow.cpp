@@ -3,7 +3,7 @@
 #include "file_manager.h"
 #include "rectangle.h"
 #include "triangle.h"
-
+//1231
 MainWindow::MainWindow(QWidget* parent)
 : QMainWindow(parent) {
         setFixedSize(800, 600);
