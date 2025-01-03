@@ -1,4 +1,4 @@
-#include "Triangle.h"
+#include "triangle.h"
 #include <qjsonarray.h>
 #include <qjsonobject.h>
 

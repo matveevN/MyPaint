@@ -304,8 +304,8 @@ void MainWindow::mouseMoveEvent(QMouseEvent* event) { // думать
                         update(QRegion(oldRect.united(newRect)));
                 }
         } else if (_isConnecting && _startConnectionFigure) {
-                QRect oldCursorRect = QRect(_connectionCursor - QPoint(5, 5),
-                                            QSize(10, 10));
+                // QRect oldCursorRect = QRect(_connectionCursor - QPoint(5, 5),
+                //                            QSize(10, 10));
                 _connectionCursor = event->pos();
 
                 QRect startFigureRect = _startConnectionFigure->boundingRect();
@@ -338,7 +338,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent* event) { // думать
 
                 QRegion updateRegion = QRegion(oldRect.united(newRect));
 
-                for (const auto& connection : _connections) {
+                for (const auto& connection : std::as_const(_connections)) {
                         if (connection.first == _movingFigure
                             || connection.second == _movingFigure) {
                                 QRect connectionRect
