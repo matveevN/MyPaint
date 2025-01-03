@@ -298,17 +298,67 @@ void MainWindow::mousePressEvent(QMouseEvent* event) {
 void MainWindow::mouseMoveEvent(QMouseEvent* event) { // думать
         if (_isDrawing) {
                 if (_currentFigure) {
+                        QRect oldRect = _currentFigure->boundingRect();
                         _currentFigure->updateShape(event->pos());
+                        QRect newRect = _currentFigure->boundingRect();
+                        update(QRegion(oldRect.united(newRect)));
                 }
-                update();
         } else if (_isConnecting && _startConnectionFigure) {
+                QRect oldCursorRect = QRect(_connectionCursor - QPoint(5, 5),
+                                            QSize(10, 10));
                 _connectionCursor = event->pos();
-                update();
+
+                QRect startFigureRect = _startConnectionFigure->boundingRect();
+                QRect lineRect = QRect(startFigureRect.center(),
+                                       _connectionCursor)
+                                     .normalized();
+
+                QRect cursorRect = QRect(_connectionCursor - QPoint(5, 5),
+                                         QSize(10, 10));
+
+                QRect updateRect = startFigureRect.united(lineRect).united(
+                    cursorRect);
+                update(QRegion(updateRect));
         } else if (_isMoving && _movingFigure) {
+                // QPoint offset = event->pos() - _moveStartPos;
+                // _movingFigure->move(offset);
+                // _moveStartPos = event->pos();
+                // update();
+                QRect oldRect = _movingFigure->boundingRect().adjusted(-5,
+                                                                       -5,
+                                                                       5,
+                                                                       5);
                 QPoint offset = event->pos() - _moveStartPos;
                 _movingFigure->move(offset);
+                QRect newRect = _movingFigure->boundingRect().adjusted(-5,
+                                                                       -5,
+                                                                       5,
+                                                                       5);
                 _moveStartPos = event->pos();
-                update();
+
+                QRegion updateRegion = QRegion(oldRect.united(newRect));
+
+                for (const auto& connection : _connections) {
+                        if (connection.first == _movingFigure
+                            || connection.second == _movingFigure) {
+                                QRect connectionRect
+                                    = QRect(connection.first->boundingRect()
+                                                .center(),
+                                            connection.second->boundingRect()
+                                                .center())
+                                          .normalized();
+
+                                connectionRect = connectionRect.adjusted(-5,
+                                                                         -5,
+                                                                         5,
+                                                                         5);
+
+                                updateRegion = updateRegion.united(
+                                    QRegion(connectionRect));
+                        }
+                }
+
+                update(updateRegion);
         }
 }
 
