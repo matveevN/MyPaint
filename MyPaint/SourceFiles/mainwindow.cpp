@@ -126,7 +126,6 @@ void MainWindow::onDeleteButtonClicked() {
 void MainWindow::onConnectButtonClicked() {
         _isConnecting = true;
         _startConnectionFigure = nullptr;
-        //  update();
 }
 
 void MainWindow::onSaveButtonClicked() {
@@ -172,7 +171,52 @@ void MainWindow::onLoadButtonClicked() {
 
 void MainWindow::mousePressEvent(QMouseEvent* event) {
         if (event->button() == Qt::LeftButton) {
-                if (_isDeleting) {
+                if (_isDrawing) {
+                        _startPoint = event->pos();
+                        if (_currentFigure)
+                                _currentFigure->initialize(_startPoint);
+                        return;
+                } else if (_isMoving) {
+                        _movingFigure = nullptr;
+                        for (auto& figure : _figures) {
+                                if (figure->contains(event->pos())) {
+                                        _movingFigure = figure;
+                                        _moveStartPos = event->pos();
+                                        break;
+                                }
+                        }
+                        return;
+                } else if (_isConnecting) {
+                        Shapes::IFigure* clickedFigure = nullptr;
+
+                        for (auto& figure : _figures) {
+                                if (figure->contains(event->pos())) {
+                                        clickedFigure = figure;
+                                        break;
+                                }
+                        }
+
+                        if (!_startConnectionFigure) {
+                                _startConnectionFigure = clickedFigure;
+                                _connectionCursor = event->pos();
+                        } else if (clickedFigure
+                                   && clickedFigure != _startConnectionFigure) {
+                                _connections.append(
+                                    qMakePair(_startConnectionFigure,
+                                              clickedFigure));
+
+                                QRect startRect = _startConnectionFigure
+                                                      ->boundingRect();
+                                QRect endRect = clickedFigure->boundingRect();
+
+                                QRect connectionRect = startRect.united(endRect);
+                                update(QRegion(connectionRect));
+
+                                _startConnectionFigure = nullptr;
+                                _isConnecting = false;
+                        }
+                        return;
+                } else if (_isDeleting) {
                         for (int i = 0; i < _figures.size(); ++i) {
                                 if (_figures[i]->contains(event->pos())) {
                                         QRect updateRect;
@@ -217,95 +261,43 @@ void MainWindow::mousePressEvent(QMouseEvent* event) {
                                         break;
                                 }
                         }
-                } else if (_isDrawing) {
-                        _startPoint = event->pos();
-
-                        if (_currentFigure) {
-                                _currentFigure->initialize(_startPoint);
-                        }
-                } else if (_isConnecting) {
-                        Shapes::IFigure* clickedFigure = nullptr;
-
-                        for (auto& figure : _figures) {
-                                if (figure->contains(event->pos())) {
-                                        clickedFigure = figure;
-                                        break;
-                                }
-                        }
-
-                        if (!_startConnectionFigure) {
-                                _startConnectionFigure = clickedFigure;
-                                _connectionCursor = event->pos();
-                        } else if (clickedFigure
-                                   && clickedFigure != _startConnectionFigure) {
-                                _connections.append(
-                                    qMakePair(_startConnectionFigure,
-                                              clickedFigure));
-
-                                QRect startRect = _startConnectionFigure
-                                                      ->boundingRect();
-                                QRect endRect = clickedFigure->boundingRect();
-
-                                QRect connectionRect = startRect.united(endRect);
-                                update(QRegion(connectionRect));
-
-                                _startConnectionFigure = nullptr;
-                                _isConnecting = false;
-                        }
-
-                } else if (_isMoving) {
-                        _movingFigure = nullptr;
-                        for (auto& figure : _figures) {
-                                if (figure->contains(event->pos())) {
-                                        _movingFigure = figure;
-                                        _moveStartPos = event->pos();
-                                        break;
-                                }
-                        }
+                        return;
                 }
+
         } else if (event->button() == Qt::RightButton) {
-                if (_isMoving) {
-                        if (_movingFigure) {
-                                QRect oldRect = _movingFigure->boundingRect();
-                                _isMoving = false;
-                                _movingFigure = nullptr;
-                                setCursor(Qt::ArrowCursor);
+                if (_isMoving && _movingFigure) {
+                        QRect oldRect = _movingFigure->boundingRect();
+                        _isMoving = false;
+                        _movingFigure = nullptr;
+                        setCursor(Qt::ArrowCursor);
 
-                                update(QRegion(oldRect));
-                        }
-                } else if (_isDrawing) {
-                        if (_currentFigure) {
-                                QRect oldRect = _currentFigure->boundingRect();
-                                _currentFigure = nullptr;
-                                _isDrawing = false;
+                        update(QRegion(oldRect));
 
-                                update(QRegion(oldRect));
-                        }
-                } else if (_isConnecting) { // тут проблема
+                } else if (_isDrawing && _currentFigure) {
+                        QRect oldRect = _currentFigure->boundingRect();
+                        _currentFigure = nullptr;
+                        _isDrawing = false;
 
-                        if (_startConnectionFigure) {
-                                QRect startRect = _startConnectionFigure
-                                                      ->boundingRect();
-                                _startConnectionFigure = nullptr;
-                                _isConnecting = false;
+                        update(QRegion(oldRect));
 
-                                update(QRegion(startRect));
-                        }
+                } else if (_isConnecting && _startConnectionFigure) {
+                        QRect startRect = _startConnectionFigure->boundingRect();
+                        _startConnectionFigure = nullptr;
+                        _isConnecting = false;
+
+                        update(QRegion(startRect));
                 }
         }
 }
 
-void MainWindow::mouseMoveEvent(QMouseEvent* event) { // думать
-        if (_isDrawing) {
-                if (_currentFigure) {
-                        QRect oldRect = _currentFigure->boundingRect();
-                        _currentFigure->updateShape(event->pos());
-                        QRect newRect = _currentFigure->boundingRect();
-                        update(QRegion(oldRect.united(newRect)));
-                }
+void MainWindow::mouseMoveEvent(QMouseEvent* event) {
+        if (_isDrawing && _currentFigure) {
+                QRect oldRect = _currentFigure->boundingRect();
+                _currentFigure->updateShape(event->pos());
+                QRect newRect = _currentFigure->boundingRect();
+                update(QRegion(oldRect.united(newRect)));
+
         } else if (_isConnecting && _startConnectionFigure) {
-                // QRect oldCursorRect = QRect(_connectionCursor - QPoint(5, 5),
-                //                            QSize(10, 10));
                 _connectionCursor = event->pos();
 
                 QRect startFigureRect = _startConnectionFigure->boundingRect();
@@ -320,10 +312,6 @@ void MainWindow::mouseMoveEvent(QMouseEvent* event) { // думать
                     cursorRect);
                 update(QRegion(updateRect));
         } else if (_isMoving && _movingFigure) {
-                // QPoint offset = event->pos() - _moveStartPos;
-                // _movingFigure->move(offset);
-                // _moveStartPos = event->pos();
-                // update();
                 QRect oldRect = _movingFigure->boundingRect().adjusted(-5,
                                                                        -5,
                                                                        5,
