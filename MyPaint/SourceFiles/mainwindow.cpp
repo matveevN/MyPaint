@@ -165,7 +165,7 @@ void MainWindow::onLoadButtonClicked() {
                     QRect(connection.first->boundingRect().center(),
                           connection.second->boundingRect().center()));
         }
-        //проблема если сохранить фото и потом переместить фигуру и загрузить фото то беда
+
         update(updateRect);
 }
 
@@ -265,28 +265,27 @@ void MainWindow::mousePressEvent(QMouseEvent* event) {
                 }
 
         } else if (event->button() == Qt::RightButton) {
-                if (_isMoving && _movingFigure) {
+                if (_isDrawing && _currentFigure) {
+                        QRect oldRect = _currentFigure->boundingRect();
+                        _currentFigure = nullptr;
+                        _isDrawing = false;
+
+                        update(QRegion(oldRect));
+                } else if (_isMoving && _movingFigure) {
                         QRect oldRect = _movingFigure->boundingRect();
                         _isMoving = false;
                         _movingFigure = nullptr;
                         setCursor(Qt::ArrowCursor);
 
                         update(QRegion(oldRect));
-
-                } else if (_isDrawing && _currentFigure) {
-                        QRect oldRect = _currentFigure->boundingRect();
-                        _currentFigure = nullptr;
-                        _isDrawing = false;
-
-                        update(QRegion(oldRect));
-
-                } else if (_isConnecting && _startConnectionFigure) {
-                        QRect startRect = _startConnectionFigure->boundingRect();
-                        _startConnectionFigure = nullptr;
-                        _isConnecting = false;
-
-                        update(QRegion(startRect));
                 }
+
+        } else if (_isConnecting && _startConnectionFigure) {
+                QRect startRect = _startConnectionFigure->boundingRect();
+                _startConnectionFigure = nullptr;
+                _isConnecting = false;
+
+                update(QRegion(startRect));
         }
 }
 
@@ -297,20 +296,6 @@ void MainWindow::mouseMoveEvent(QMouseEvent* event) {
                 QRect newRect = _currentFigure->boundingRect();
                 update(QRegion(oldRect.united(newRect)));
 
-        } else if (_isConnecting && _startConnectionFigure) {
-                _connectionCursor = event->pos();
-
-                QRect startFigureRect = _startConnectionFigure->boundingRect();
-                QRect lineRect = QRect(startFigureRect.center(),
-                                       _connectionCursor)
-                                     .normalized();
-
-                QRect cursorRect = QRect(_connectionCursor - QPoint(5, 5),
-                                         QSize(10, 10));
-
-                QRect updateRect = startFigureRect.united(lineRect).united(
-                    cursorRect);
-                update(QRegion(updateRect));
         } else if (_isMoving && _movingFigure) {
                 QRect oldRect = _movingFigure->boundingRect().adjusted(-5,
                                                                        -5,
@@ -335,18 +320,28 @@ void MainWindow::mouseMoveEvent(QMouseEvent* event) {
                                             connection.second->boundingRect()
                                                 .center())
                                           .normalized();
-
                                 connectionRect = connectionRect.adjusted(-5,
                                                                          -5,
                                                                          5,
                                                                          5);
-
                                 updateRegion = updateRegion.united(
                                     QRegion(connectionRect));
                         }
                 }
 
                 update(updateRegion);
+
+        } else if (_isConnecting && _startConnectionFigure) {
+                _connectionCursor = event->pos();
+                QRect startFigureRect = _startConnectionFigure->boundingRect();
+                QRect lineRect = QRect(startFigureRect.center(),
+                                       _connectionCursor)
+                                     .normalized();
+                QRect cursorRect = QRect(_connectionCursor - QPoint(5, 5),
+                                         QSize(10, 10));
+                QRect updateRect = startFigureRect.united(lineRect).united(
+                    cursorRect);
+                update(QRegion(updateRect));
         }
 }
 
@@ -393,14 +388,14 @@ void MainWindow::paintEvent(QPaintEvent* event) {
                 }
         }
 
+        if (_isDrawing && _currentFigure) {
+                _currentFigure->draw(painter);
+        }
+
         if (_isConnecting && _startConnectionFigure) {
                 QPoint startPoint = _startConnectionFigure->getCenter();
                 painter.setPen(QPen(Qt::black, 2));
                 painter.drawLine(startPoint, _connectionCursor);
-        }
-
-        if (_isDrawing && _currentFigure) {
-                _currentFigure->draw(painter);
         }
 }
 

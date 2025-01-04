@@ -91,7 +91,7 @@ void FileManager::loadFromImageWithMetadata(
                 QString type = figureObject["type"].toString();
 
                 Shapes::IFigure* figure = Shapes::FigureFactory::createFigure(
-                    type); // Используем фабричный метод
+                    type);
 
                 if (figure) {
                         figure->fromJson(figureObject);

@@ -13,18 +13,16 @@ public:
         ~Rectangle();
 
         [[nodiscard]] QPoint getCenter() const override;
+        [[nodiscard]] QString getType() const override;
+        [[nodiscard]] QJsonObject toJson() const override;
+        [[nodiscard]] bool contains(const QPoint& point) const override;
+        [[nodiscard]] QRect boundingRect() const override;
 
         void initialize(const QPoint& startPoint) override;
 
         void updateShape(const QPoint& currentPoint) override;
 
-        [[nodiscard]] QString getType() const override;
-
-        [[nodiscard]] QJsonObject toJson() const override;
         void fromJson(const QJsonObject& json) override;
-        [[nodiscard]] bool contains(const QPoint& point) const override;
-
-        [[nodiscard]] QRect boundingRect() const override;
 
         void draw(QPainter& painter) const override;
         void setBottomRight(const QPoint& bottomRight);

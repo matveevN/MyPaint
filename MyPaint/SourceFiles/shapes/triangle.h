@@ -12,8 +12,10 @@ public:
         ~Triangle();
 
         [[nodiscard]] QPoint getCenter() const override;
-
         [[nodiscard]] bool contains(const QPoint& point) const override;
+        [[nodiscard]] QJsonObject toJson() const override;
+        [[nodiscard]] QString getType() const override;
+        [[nodiscard]] QRect boundingRect() const override;
 
         void draw(QPainter& painter) const override;
 
@@ -23,13 +25,7 @@ public:
 
         void updateShape(const QPoint& currentPoint) override;
 
-        [[nodiscard]] QJsonObject toJson() const override;
-
         void fromJson(const QJsonObject& json) override;
-
-        [[nodiscard]] QString getType() const override;
-
-        [[nodiscard]] QRect boundingRect() const override;
 
 private:
         QPoint _center;
