@@ -33,18 +33,18 @@ void FileManager::saveToImageWithMetadata(
 
         QJsonObject rootObject;
         QJsonArray figuresArray;
+        QJsonArray connectionsArray;
 
         for (const auto& figure : figures) {
                 figuresArray.append(figure->toJson());
         }
 
-        QJsonArray connectionsArray;
         for (const auto& connection : connections) {
-                QJsonObject connectionObject;
                 int startIdx = figures.indexOf(connection.first);
                 int endIdx = figures.indexOf(connection.second);
 
                 if (startIdx != -1 && endIdx != -1) {
+                        QJsonObject connectionObject;
                         connectionObject["startIndex"] = startIdx;
                         connectionObject["endIndex"] = endIdx;
                         connectionsArray.append(connectionObject);
@@ -92,7 +92,6 @@ void FileManager::loadFromImageWithMetadata(
 
                 Shapes::IFigure* figure = Shapes::FigureFactory::createFigure(
                     type);
-
                 if (figure) {
                         figure->fromJson(figureObject);
                         figures.append(figure);
