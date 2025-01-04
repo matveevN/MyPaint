@@ -1,6 +1,7 @@
 #pragma once
 
 #include <qpainter.h>
+
 namespace Shapes {
 class IFigure {
 public:

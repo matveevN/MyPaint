@@ -12,7 +12,11 @@
 #include <QPainter>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include "IFigure.h"
+
+namespace Shapes {
+class IFigure;
+
+}
 
 namespace Ui {
 class MainWindow;

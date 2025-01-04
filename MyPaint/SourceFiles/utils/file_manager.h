@@ -5,7 +5,11 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QVector>
-#include "IFigure.h"
+
+namespace Shapes {
+class IFigure;
+
+}
 
 namespace Utils {
 class FileManager final {

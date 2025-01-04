@@ -1,6 +1,12 @@
 #pragma once
 
-#include "IFigure.h"
+#include <qpainter.h>
+
+namespace Shapes {
+class IFigure;
+
+}
+
 namespace Shapes {
 class FigureFactory {
 public:

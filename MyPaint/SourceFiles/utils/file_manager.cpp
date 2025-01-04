@@ -1,4 +1,5 @@
 #include "file_manager.h"
+#include "IFigure.h"
 #include "figure_factory.h"
 
 namespace Utils {

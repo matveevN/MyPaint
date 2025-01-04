@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "IFigure.h"
 #include "ellipse.h"
 #include "file_manager.h"
 #include "rectangle.h"

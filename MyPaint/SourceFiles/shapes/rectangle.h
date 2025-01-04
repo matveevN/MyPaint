@@ -1,6 +1,5 @@
 #pragma once
 
-#include <QPainter>
 #include <QPoint>
 #include <QRect>
 #include "IFigure.h"
