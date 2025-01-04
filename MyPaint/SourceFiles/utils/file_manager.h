@@ -1,11 +1,6 @@
 #pragma once
 
-#include <QFile>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QVector>
-
+#include <qcontainerfwd.h>
 namespace Shapes {
 class IFigure;
 

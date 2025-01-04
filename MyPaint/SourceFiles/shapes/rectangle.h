@@ -1,7 +1,5 @@
 #pragma once
 
-#include <QPoint>
-#include <QRect>
 #include "IFigure.h"
 
 namespace Shapes {

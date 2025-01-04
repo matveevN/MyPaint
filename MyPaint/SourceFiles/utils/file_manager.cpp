@@ -1,4 +1,7 @@
 #include "file_manager.h"
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include "IFigure.h"
 #include "figure_factory.h"
 

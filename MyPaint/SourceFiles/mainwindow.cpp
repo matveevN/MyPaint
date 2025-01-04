@@ -1,4 +1,8 @@
 #include "mainwindow.h"
+#include <QFileDialog>
+#include <QMouseEvent>
+#include <QPushButton>
+#include <QVBoxLayout>
 #include "IFigure.h"
 #include "ellipse.h"
 #include "file_manager.h"
@@ -339,7 +343,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent* event) {
                                        _connectionCursor)
                                      .normalized();
                 QRect cursorRect = QRect(_connectionCursor - QPoint(5, 5),
-                                         QSize(10, 10));
+                                         QSize(5, 5));
                 QRect updateRect = startFigureRect.united(lineRect).united(
                     cursorRect);
                 update(QRegion(updateRect));

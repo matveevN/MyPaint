@@ -1,17 +1,6 @@
 #pragma once
 
-#include <QFile>
-#include <QFileDialog>
-#include <QHBoxLayout>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
 #include <QMainWindow>
-#include <QMessageBox>
-#include <QMouseEvent>
-#include <QPainter>
-#include <QPushButton>
-#include <QVBoxLayout>
 
 namespace Shapes {
 class IFigure;
