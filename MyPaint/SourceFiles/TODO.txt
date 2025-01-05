@@ -22,3 +22,6 @@
 
 
 ограничить частоту вызова update 60 fps
+
+
+QRect vs QRegion
