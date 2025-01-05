@@ -1,3 +1,4 @@
+#include "IFigure.h"
 #include "figure_factory.h"
 
 namespace Utils {

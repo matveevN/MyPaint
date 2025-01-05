@@ -1,5 +1,7 @@
 #pragma once
 
+#include "IFigure.h"
+
 namespace Shapes {
 class Triangle final : public Shapes::IFigure {
 public:

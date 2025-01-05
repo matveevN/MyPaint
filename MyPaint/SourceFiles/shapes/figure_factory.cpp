@@ -1,4 +1,5 @@
 #include "figure_factory.h"
+#include "IFigure.h"
 #include "ellipse.h"
 #include "rectangle.h"
 #include "triangle.h"
