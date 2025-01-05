@@ -257,8 +257,10 @@ void MainWindow::mousePressEvent(QMouseEvent* event) {
                                         updateRect = updateRect.united(
                                             figureRect);
 
-                                        delete _figures[i];
-                                        _figures.removeAt(i);
+                                        std::swap(_figures[i], _figures.back());
+
+                                        delete _figures.back();
+                                        _figures.pop_back();
 
                                         _isDeleting = false;
 
