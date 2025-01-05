@@ -1,6 +1,4 @@
 #include "ellipse.h"
-#include <qjsonarray.h>
-#include <qjsonobject.h>
 
 namespace Shapes {
 

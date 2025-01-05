@@ -1,11 +1,5 @@
 #include "mainwindow.h"
-#include <QFileDialog>
-#include <QMouseEvent>
-#include <QPushButton>
-#include <QVBoxLayout>
-#include "IFigure.h"
 #include "ellipse.h"
-#include "file_manager.h"
 #include "rectangle.h"
 #include "triangle.h"
 

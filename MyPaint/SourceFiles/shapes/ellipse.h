@@ -1,7 +1,5 @@
 #pragma once
 
-#include "IFigure.h"
-
 namespace Shapes {
 class Ellipse final : public IFigure {
 public:

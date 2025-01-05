@@ -1,6 +1,5 @@
 #pragma once
 
-#include <qcontainerfwd.h>
 namespace Shapes {
 class IFigure;
 

@@ -39,6 +39,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(MyPaint
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        SourceFiles/stdafx.h
     )
 else()
     add_executable(MyPaint
@@ -53,6 +54,7 @@ target_include_directories(MyPaint PRIVATE
     ${CMAKE_SOURCE_DIR}/SourceFiles/utils
 )
 
+target_precompile_headers(MyPaint PRIVATE SourceFiles/stdafx.h)
 
 target_link_libraries(MyPaint PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 

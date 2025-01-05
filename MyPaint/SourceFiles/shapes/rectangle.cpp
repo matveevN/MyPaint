@@ -1,6 +1,4 @@
 #include "rectangle.h"
-#include <qjsonarray.h>
-#include <qjsonobject.h>
 
 namespace Shapes {
 Rectangle::Rectangle(const QPoint& topLeft, const QPoint& bottomRight)
