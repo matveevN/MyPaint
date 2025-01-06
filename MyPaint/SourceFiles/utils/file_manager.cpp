@@ -49,6 +49,19 @@ void FileManager::saveToImageWithMetadata(
                         connectionObject["endIndex"] = endIdx;
                         connectionsArray.append(connectionObject);
                 }
+
+                // bool condition = (startIdx != -1) && (endIdx != -1);
+                // connectionsArray.append(
+                //     QJsonObject({{"startIndex", startIdx * condition},
+                //                  {"endIndex", endIdx * condition}}));
+
+                // если startIdx or endIdx == -1 В массив connectionsArray
+                // добавится объект с нулевыми значениями:
+
+                // Invalid operands to binary expression ('bool' and 'QJsonObject')
+                // connectionsArray += condition
+                //                     * QJsonObject({{"startIndex", startIdx},
+                //                                    {"endIndex", endIdx}});
         }
 
         rootObject["figures"] = figuresArray;
