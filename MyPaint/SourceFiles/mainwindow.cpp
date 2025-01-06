@@ -6,9 +6,10 @@
 
 MainWindow::MainWindow(QWidget* parent)
 : QMainWindow(parent) {
-        setFixedSize(800, 600);
         QWidget* centralWidget = new QWidget(this);
+
         setCentralWidget(centralWidget);
+        centralWidget->setMinimumSize(800, 600);
 
         QVBoxLayout* mainLayout = new QVBoxLayout(centralWidget);
 
@@ -138,7 +139,9 @@ void MainWindow::onSaveButtonClicked() {
 
         Utils::FileManager::saveToImageWithMetadata(_figures,
                                                     _connections,
-                                                    fileName);
+                                                    fileName,
+                                                    width(),
+                                                    height());
 }
 
 void MainWindow::onLoadButtonClicked() {

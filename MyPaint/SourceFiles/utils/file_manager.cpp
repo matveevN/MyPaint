@@ -5,8 +5,10 @@ namespace Utils {
 void FileManager::saveToImageWithMetadata(
     const QVector<Shapes::IFigure*>& figures,
     const QVector<QPair<Shapes::IFigure*, Shapes::IFigure*>>& connections,
-    const QString& fileName) {
-        QPixmap canvas(800, 600);
+    const QString& fileName,
+    int width,
+    int height) {
+        QPixmap canvas(width, height);
         canvas.fill(Qt::white);
         QPainter painter(&canvas);
 
