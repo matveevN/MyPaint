@@ -20,7 +20,7 @@ set(PROJECT_SOURCES
     SourceFiles/main.cpp
     SourceFiles/mainwindow.cpp
     SourceFiles/mainwindow.h
-    SourceFiles/shapes/IFigure.h
+    SourceFiles/shapes/IShape.h
     SourceFiles/shapes/rectangle.h
     SourceFiles/shapes/rectangle.cpp
     SourceFiles/shapes/ellipse.h
@@ -40,6 +40,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         SourceFiles/stdafx.h
+
     )
 else()
     add_executable(MyPaint

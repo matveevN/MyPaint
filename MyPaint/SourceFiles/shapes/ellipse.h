@@ -1,9 +1,9 @@
 #pragma once
 
-#include "IFigure.h"
+#include "IShape.h"
 
 namespace Shapes {
-class Ellipse final : public IFigure {
+class Ellipse final : public IShapes {
 public:
         Ellipse(const QPoint& center, int radiusX, int radiusY);
         ~Ellipse();

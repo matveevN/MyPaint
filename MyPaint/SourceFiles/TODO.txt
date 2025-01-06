@@ -25,3 +25,6 @@
 
 
 QRect vs QRegion
+
+
+QVector vs vector

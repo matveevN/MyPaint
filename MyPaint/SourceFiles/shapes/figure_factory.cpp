@@ -1,11 +1,11 @@
 #include "figure_factory.h"
-#include "IFigure.h"
+#include "IShape.h"
 #include "ellipse.h"
 #include "rectangle.h"
 #include "triangle.h"
 
 namespace Shapes {
-IFigure* FigureFactory::createFigure(const QString& type) {
+IShapes* FigureFactory::createFigure(const QString& type) {
         if (type == "rectangle") {
                 return new Rectangle(QPoint(), QPoint());
         } else if (type == "ellipse") {

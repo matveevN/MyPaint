@@ -3,8 +3,7 @@
 #include <QMainWindow>
 
 namespace Shapes {
-class IFigure;
-
+class IShapes;
 }
 
 namespace Ui {
@@ -15,7 +14,7 @@ class MainWindow final : public QMainWindow {
         Q_OBJECT
 
 public:
-        explicit MainWindow(QWidget *parent = nullptr);
+        MainWindow();
         ~MainWindow();
 
 protected:
@@ -36,14 +35,14 @@ private slots:
         void onConnectButtonClicked();
 
 private:
-        QVector<Shapes::IFigure *> _figures;
+        QVector<Shapes::IShapes *> _figures;
 
-        QVector<QPair<Shapes::IFigure *, Shapes::IFigure *>> _connections;
+        QVector<QPair<Shapes::IShapes *, Shapes::IShapes *>> _connections;
 
-        Shapes::IFigure *_movingFigure = nullptr;
-        Shapes::IFigure *_selectedFigure = nullptr;
-        Shapes::IFigure *_currentFigure = nullptr;
-        Shapes::IFigure *_startConnectionFigure = nullptr;
+        Shapes::IShapes *_movingFigure = nullptr;
+        Shapes::IShapes *_selectedFigure = nullptr;
+        Shapes::IShapes *_currentFigure = nullptr;
+        Shapes::IShapes *_startConnectionFigure = nullptr;
 
         QPoint _startPoint;
         QPoint _moveStartPos;

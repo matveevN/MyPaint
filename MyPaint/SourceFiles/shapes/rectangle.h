@@ -1,9 +1,9 @@
 #pragma once
 
-#include "IFigure.h"
+#include "IShape.h"
 
 namespace Shapes {
-class Rectangle final : public Shapes::IFigure {
+class Rectangle final : public Shapes::IShapes {
 public:
         Rectangle(const QPoint& topLeft, const QPoint& bottomRight);
 

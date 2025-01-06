@@ -1,29 +1,10 @@
 #include "mainwindow.h"
-#include "IFigure.h"
+#include "IShape.h"
 #include "ellipse.h"
 #include "rectangle.h"
 #include "triangle.h"
 
-MainWindow::MainWindow(QWidget* parent)
-: QMainWindow(parent) {
-        QWidget* centralWidget = new QWidget(this);
-
-        setCentralWidget(centralWidget);
-        centralWidget->setMinimumSize(800, 600);
-
-        QVBoxLayout* mainLayout = new QVBoxLayout(centralWidget);
-
-        QHBoxLayout* buttonLayout = new QHBoxLayout();
-
-        QPushButton* rectangleButton = new QPushButton("Прямоугольник", this);
-        QPushButton* ellipseButton = new QPushButton("Эллипс", this);
-        QPushButton* triangleButton = new QPushButton("Треугольник", this);
-        QPushButton* moveButton = new QPushButton("Переместить", this);
-        QPushButton* deleteButton = new QPushButton("Удалить", this);
-        QPushButton* saveButton = new QPushButton("Сохранить", this);
-        QPushButton* loadButton = new QPushButton("Загрузить", this);
-        QPushButton* connectButton = new QPushButton("Связь", this);
-
+MainWindow::MainWindow() {
         QString buttonStyle = R"(
         QPushButton {
             background-color: #333333; 
@@ -39,61 +20,83 @@ MainWindow::MainWindow(QWidget* parent)
         }
     )";
 
-        rectangleButton->setStyleSheet(buttonStyle);
-        ellipseButton->setStyleSheet(buttonStyle);
-        triangleButton->setStyleSheet(buttonStyle);
-        moveButton->setStyleSheet(buttonStyle);
-        deleteButton->setStyleSheet(buttonStyle);
-        saveButton->setStyleSheet(buttonStyle);
-        loadButton->setStyleSheet(buttonStyle);
-        connectButton->setStyleSheet(buttonStyle);
+        QWidget* centralWidget = new QWidget(this);
 
+        setCentralWidget(centralWidget);
+        centralWidget->setMinimumSize(800, 600);
+
+        QVBoxLayout* mainLayout = new QVBoxLayout(centralWidget);
+
+        QHBoxLayout* buttonLayout = new QHBoxLayout();
+
+        QPushButton* rectangleButton = new QPushButton("Прямоугольник", this);
+        rectangleButton->setStyleSheet(buttonStyle);
         buttonLayout->addWidget(rectangleButton);
-        buttonLayout->addWidget(triangleButton);
+        connect(rectangleButton,
+                &QPushButton::clicked,
+                this,
+                &MainWindow::onRectangleButtonClicked);
+
+        QPushButton* ellipseButton = new QPushButton("Эллипс", this);
+        ellipseButton->setStyleSheet(buttonStyle);
         buttonLayout->addWidget(ellipseButton);
+        connect(ellipseButton,
+                &QPushButton::clicked,
+                this,
+                &MainWindow::onEllipseButtonClicked);
+
+        QPushButton* triangleButton = new QPushButton("Треугольник", this);
+        triangleButton->setStyleSheet(buttonStyle);
+        buttonLayout->addWidget(triangleButton);
+        connect(triangleButton,
+                &QPushButton::clicked,
+                this,
+                &MainWindow::onTriangleButtonClicked);
+
+        QPushButton* connectButton = new QPushButton("Связь", this);
+        connectButton->setStyleSheet(buttonStyle);
         buttonLayout->addWidget(connectButton);
+        connect(connectButton,
+                &QPushButton::clicked,
+                this,
+                &MainWindow::onConnectButtonClicked);
+
+        QPushButton* moveButton = new QPushButton("Переместить", this);
+        moveButton->setStyleSheet(buttonStyle);
         buttonLayout->addWidget(moveButton);
+        connect(moveButton,
+                &QPushButton::clicked,
+                this,
+                &MainWindow::onMoveButtonClicked);
+
+        QPushButton* deleteButton = new QPushButton("Удалить", this);
+        deleteButton->setStyleSheet(buttonStyle);
         buttonLayout->addWidget(deleteButton);
+        connect(deleteButton,
+                &QPushButton::clicked,
+                this,
+                &MainWindow::onDeleteButtonClicked);
+
+        QPushButton* loadButton = new QPushButton("Загрузить", this);
+        loadButton->setStyleSheet(buttonStyle);
         buttonLayout->addWidget(loadButton);
+        connect(loadButton,
+                &QPushButton::clicked,
+                this,
+                &MainWindow::onLoadButtonClicked);
+
+        QPushButton* saveButton = new QPushButton("Сохранить", this);
+        saveButton->setStyleSheet(buttonStyle);
         buttonLayout->addWidget(saveButton);
+        connect(saveButton,
+                &QPushButton::clicked,
+                this,
+                &MainWindow::onSaveButtonClicked);
 
         mainLayout->addLayout(buttonLayout);
         mainLayout->addStretch();
 
         centralWidget->setLayout(mainLayout);
-
-        connect(rectangleButton,
-                &QPushButton::clicked,
-                this,
-                &MainWindow::onRectangleButtonClicked);
-        connect(ellipseButton,
-                &QPushButton::clicked,
-                this,
-                &MainWindow::onEllipseButtonClicked);
-        connect(triangleButton,
-                &QPushButton::clicked,
-                this,
-                &MainWindow::onTriangleButtonClicked);
-        connect(moveButton,
-                &QPushButton::clicked,
-                this,
-                &MainWindow::onMoveButtonClicked);
-        connect(deleteButton,
-                &QPushButton::clicked,
-                this,
-                &MainWindow::onDeleteButtonClicked);
-        connect(saveButton,
-                &QPushButton::clicked,
-                this,
-                &MainWindow::onSaveButtonClicked);
-        connect(loadButton,
-                &QPushButton::clicked,
-                this,
-                &MainWindow::onLoadButtonClicked);
-        connect(connectButton,
-                &QPushButton::clicked,
-                this,
-                &MainWindow::onConnectButtonClicked);
 }
 MainWindow::~MainWindow() {
         qDeleteAll(_figures);
@@ -190,7 +193,7 @@ void MainWindow::mousePressEvent(QMouseEvent* event) {
                         }
                         return;
                 } else if (_isConnecting) {
-                        Shapes::IFigure* clickedFigure = nullptr;
+                        Shapes::IShapes* clickedFigure = nullptr;
 
                         for (auto& figure : _figures) {
                                 if (figure->contains(event->pos())) {
@@ -371,39 +374,6 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* event) {
         }
 }
 
-void MainWindow::paintEvent(QPaintEvent* event) {
-        QPainter painter(this);
-
-        if (!_backgroundPixmap.isNull()) {
-                painter.drawPixmap(0, 0, _backgroundPixmap);
-        } else {
-                painter.fillRect(rect(), Qt::white);
-        }
-
-        for (const auto& figure : std::as_const(_figures)) {
-                figure->draw(painter);
-        }
-
-        painter.setPen(QPen(Qt::black, 2));
-        for (const auto& connection : std::as_const(_connections)) {
-                Shapes::IFigure* start = connection.first;
-                Shapes::IFigure* end = connection.second;
-                if (start && end) {
-                        painter.drawLine(start->getCenter(), end->getCenter());
-                }
-        }
-
-        if (_isDrawing && _currentFigure) {
-                _currentFigure->draw(painter);
-        }
-
-        if (_isConnecting && _startConnectionFigure) {
-                QPoint startPoint = _startConnectionFigure->getCenter();
-                painter.setPen(QPen(Qt::black, 2));
-                painter.drawLine(startPoint, _connectionCursor);
-        }
-}
-
 void MainWindow::keyPressEvent(QKeyEvent* event) {
         if (event->key() == Qt::Key_Escape) {
                 if (_isDrawing) {
@@ -423,4 +393,37 @@ void MainWindow::keyPressEvent(QKeyEvent* event) {
         }
 
         QMainWindow::keyPressEvent(event);
+}
+
+void MainWindow::paintEvent(QPaintEvent* event) {
+        QPainter painter(this);
+
+        if (!_backgroundPixmap.isNull()) {
+                painter.drawPixmap(0, 0, _backgroundPixmap);
+        } else {
+                painter.fillRect(rect(), Qt::white);
+        }
+
+        for (const auto& figure : std::as_const(_figures)) {
+                figure->draw(painter);
+        }
+
+        painter.setPen(QPen(Qt::black, 2));
+        for (const auto& connection : std::as_const(_connections)) {
+                Shapes::IShapes* start = connection.first;
+                Shapes::IShapes* end = connection.second;
+                if (start && end) {
+                        painter.drawLine(start->getCenter(), end->getCenter());
+                }
+        }
+
+        if (_isDrawing && _currentFigure) {
+                _currentFigure->draw(painter);
+        }
+
+        if (_isConnecting && _startConnectionFigure) {
+                QPoint startPoint = _startConnectionFigure->getCenter();
+                painter.setPen(QPen(Qt::black, 2));
+                painter.drawLine(startPoint, _connectionCursor);
+        }
 }

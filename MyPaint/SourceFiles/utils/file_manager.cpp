@@ -1,10 +1,10 @@
-#include "IFigure.h"
+#include "IShape.h"
 #include "figure_factory.h"
 
 namespace Utils {
 void FileManager::saveToImageWithMetadata(
-    const QVector<Shapes::IFigure*>& figures,
-    const QVector<QPair<Shapes::IFigure*, Shapes::IFigure*>>& connections,
+    const QVector<Shapes::IShapes*>& figures,
+    const QVector<QPair<Shapes::IShapes*, Shapes::IShapes*>>& connections,
     const QString& fileName,
     int width,
     int height) {
@@ -18,8 +18,8 @@ void FileManager::saveToImageWithMetadata(
 
         painter.setPen(Qt::black);
         for (const auto& connection : connections) {
-                Shapes::IFigure* startFigure = connection.first;
-                Shapes::IFigure* endFigure = connection.second;
+                Shapes::IShapes* startFigure = connection.first;
+                Shapes::IShapes* endFigure = connection.second;
 
                 if (startFigure && endFigure) {
                         painter.drawLine(startFigure->getCenter(),
@@ -81,8 +81,8 @@ void FileManager::saveToImageWithMetadata(
 }
 
 void FileManager::loadFromImageWithMetadata(
-    QVector<Shapes::IFigure*>& figures,
-    QVector<QPair<Shapes::IFigure*, Shapes::IFigure*>>& connections,
+    QVector<Shapes::IShapes*>& figures,
+    QVector<QPair<Shapes::IShapes*, Shapes::IShapes*>>& connections,
     const QString& fileName) {
         QImage image(fileName);
         if (image.isNull()) {
@@ -105,7 +105,7 @@ void FileManager::loadFromImageWithMetadata(
                 QJsonObject figureObject = value.toObject();
                 QString type = figureObject["type"].toString();
 
-                Shapes::IFigure* figure = Shapes::FigureFactory::createFigure(
+                Shapes::IShapes* figure = Shapes::FigureFactory::createFigure(
                     type);
                 if (figure) {
                         figure->fromJson(figureObject);

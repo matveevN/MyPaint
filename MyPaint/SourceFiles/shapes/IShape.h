@@ -1,7 +1,7 @@
 #pragma once
 
 namespace Shapes {
-class IFigure {
+class IShapes {
 public:
         [[nodiscard]] virtual QPoint getCenter() const = 0;
         [[nodiscard]] virtual bool contains(const QPoint& point) const = 0;
@@ -19,6 +19,6 @@ public:
 
         virtual void fromJson(const QJsonObject& json) = 0;
 
-        virtual ~IFigure() = default;
+        virtual ~IShapes() = default;
 };
 } // namespace Shapes
