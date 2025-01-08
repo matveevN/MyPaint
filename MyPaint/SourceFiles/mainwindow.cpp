@@ -1,10 +1,12 @@
 #include "mainwindow.h"
-#include "IShape.h"
 #include "ellipse.h"
+#include "file_manager.h"
 #include "rectangle.h"
+#include "shape_editor_widget.h"
 #include "triangle.h"
 
-MainWindow::MainWindow() {
+MainWindow::MainWindow()
+: _shapeEditorWidget(new ShapeEditorWidget()) {
         QString buttonStyle = R"(
         QPushButton {
             background-color: #333333; 
@@ -20,13 +22,10 @@ MainWindow::MainWindow() {
         }
     )";
 
-        QWidget* centralWidget = new QWidget(this);
+        setCentralWidget(_shapeEditorWidget);
+        _shapeEditorWidget->setMinimumSize(800, 600);
 
-        setCentralWidget(centralWidget);
-        centralWidget->setMinimumSize(800, 600);
-
-        QVBoxLayout* mainLayout = new QVBoxLayout(centralWidget);
-
+        QVBoxLayout* mainLayout = new QVBoxLayout();
         QHBoxLayout* buttonLayout = new QHBoxLayout();
 
         QPushButton* rectangleButton = new QPushButton("Прямоугольник", this);
@@ -95,41 +94,43 @@ MainWindow::MainWindow() {
 
         mainLayout->addLayout(buttonLayout);
         mainLayout->addStretch();
-
-        centralWidget->setLayout(mainLayout);
+        _shapeEditorWidget->setLayout(mainLayout);
 }
+
 MainWindow::~MainWindow() {
-        qDeleteAll(_figures);
+        delete _shapeEditorWidget;
 }
 
 void MainWindow::onRectangleButtonClicked() {
-        _currentFigure = new Shapes::Rectangle(QPoint(), QPoint());
-        _isDrawing = true;
+        _shapeEditorWidget->setCurrentFigure(
+            new Shapes::Rectangle(QPoint(), QPoint()));
+
+        _shapeEditorWidget->setIsDrawing(true);
 }
 
 void MainWindow::onEllipseButtonClicked() {
-        _currentFigure = new Shapes::Ellipse(QPoint(), 0, 0);
-        _isDrawing = true;
+        _shapeEditorWidget->setCurrentFigure(
+            new Shapes::Ellipse(QPoint(), 0, 0));
+        _shapeEditorWidget->setIsDrawing(true);
 }
 
 void MainWindow::onTriangleButtonClicked() {
-        _currentFigure = new Shapes::Triangle(QPoint(), 0);
-        _isDrawing = true;
+        _shapeEditorWidget->setCurrentFigure(new Shapes::Triangle(QPoint(), 0));
+
+        _shapeEditorWidget->setIsDrawing(true);
 }
 
 void MainWindow::onMoveButtonClicked() {
-        _isMoving = !_isMoving;
-        setCursor(_isMoving ? Qt::ClosedHandCursor : Qt::ArrowCursor);
-        _movingFigure = !_isMoving ? nullptr : _movingFigure;
+        _shapeEditorWidget->setIsMoving(!_shapeEditorWidget->getIsMoving());
 }
 
 void MainWindow::onDeleteButtonClicked() {
-        _isDeleting = true;
+        _shapeEditorWidget->setIsDeleting(true);
 }
 
 void MainWindow::onConnectButtonClicked() {
-        _isConnecting = true;
-        _startConnectionFigure = nullptr;
+        _shapeEditorWidget->setIsConnecting(true);
+        _shapeEditorWidget->setStartConnectionFigure(nullptr);
 }
 
 void MainWindow::onSaveButtonClicked() {
@@ -140,11 +141,12 @@ void MainWindow::onSaveButtonClicked() {
         if (fileName.isEmpty())
                 return;
 
-        Utils::FileManager::saveToImageWithMetadata(_figures,
-                                                    _connections,
-                                                    fileName,
-                                                    width(),
-                                                    height());
+        Utils::FileManager::saveToImageWithMetadata(
+            _shapeEditorWidget->getFigures(),
+            _shapeEditorWidget->getConnections(),
+            fileName,
+            width(),
+            height());
 }
 
 void MainWindow::onLoadButtonClicked() {
@@ -158,272 +160,22 @@ void MainWindow::onLoadButtonClicked() {
 
         QRect updateRect(0, 0, 0, 0);
 
-        Utils::FileManager::loadFromImageWithMetadata(_figures,
-                                                      _connections,
-                                                      fileName);
+        Utils::FileManager::loadFromImageWithMetadata(
+            _shapeEditorWidget->getFigures(),
+            _shapeEditorWidget->getConnections(),
+            fileName);
 
-        for (const auto& figure : std::as_const(_figures)) {
+        for (const auto& figure :
+             std::as_const(_shapeEditorWidget->getFigures())) {
                 updateRect = updateRect.united(figure->boundingRect());
         }
 
-        for (const auto& connection : std::as_const(_connections)) {
+        for (const auto& connection :
+             std::as_const(_shapeEditorWidget->getConnections())) {
                 updateRect = updateRect.united(
                     QRect(connection.first->boundingRect().center(),
                           connection.second->boundingRect().center()));
         }
 
         update(updateRect);
-}
-
-void MainWindow::mousePressEvent(QMouseEvent* event) {
-        if (event->button() == Qt::LeftButton) {
-                if (_isDrawing) {
-                        _startPoint = event->pos();
-                        if (_currentFigure)
-                                _currentFigure->initialize(_startPoint);
-                        return;
-                } else if (_isMoving) {
-                        _movingFigure = nullptr;
-                        for (auto& figure : _figures) {
-                                if (figure->contains(event->pos())) {
-                                        _movingFigure = figure;
-                                        _moveStartPos = event->pos();
-                                        break;
-                                }
-                        }
-                        return;
-                } else if (_isConnecting) {
-                        Shapes::IShapes* clickedFigure = nullptr;
-
-                        for (auto& figure : _figures) {
-                                if (figure->contains(event->pos())) {
-                                        clickedFigure = figure;
-                                        break;
-                                }
-                        }
-
-                        if (!_startConnectionFigure) {
-                                _startConnectionFigure = clickedFigure;
-                                _connectionCursor = event->pos();
-                        } else if (clickedFigure
-                                   && clickedFigure != _startConnectionFigure) {
-                                _connections.append(
-                                    qMakePair(_startConnectionFigure,
-                                              clickedFigure));
-
-                                QRect startRect = _startConnectionFigure
-                                                      ->boundingRect();
-                                QRect endRect = clickedFigure->boundingRect();
-
-                                QRect connectionRect = startRect.united(endRect);
-                                update(QRegion(connectionRect));
-
-                                _startConnectionFigure = nullptr;
-                                _isConnecting = false;
-                        }
-                        return;
-                } else if (_isDeleting) {
-                        for (int i = 0; i < _figures.size(); ++i) {
-                                if (_figures[i]->contains(event->pos())) {
-                                        QRect updateRect;
-
-                                        for (int j = 0; j < _connections.size();
-                                             ++j) {
-                                                if (_connections[j].first
-                                                        == _figures[i]
-                                                    || _connections[j].second
-                                                           == _figures[i]) {
-                                                        QPoint start
-                                                            = _connections[j]
-                                                                  .first
-                                                                  ->getCenter();
-                                                        QPoint end
-                                                            = _connections[j]
-                                                                  .second
-                                                                  ->getCenter();
-                                                        QRect connectionRect
-                                                            = QRect(start, end)
-                                                                  .normalized();
-                                                        updateRect
-                                                            = updateRect.united(
-                                                                connectionRect);
-
-                                                        _connections.removeAt(j);
-                                                        --j;
-                                                }
-                                        }
-
-                                        QRect figureRect = _figures[i]
-                                                               ->boundingRect();
-                                        updateRect = updateRect.united(
-                                            figureRect);
-
-                                        std::swap(_figures[i], _figures.back());
-
-                                        delete _figures.back();
-                                        _figures.pop_back();
-
-                                        _isDeleting = false;
-
-                                        update(QRegion(updateRect));
-                                        break;
-                                }
-                        }
-                        return;
-                }
-
-        } else if (event->button() == Qt::RightButton) {
-                if (_isDrawing && _currentFigure) {
-                        QRect oldRect = _currentFigure->boundingRect();
-                        _currentFigure = nullptr;
-                        _isDrawing = false;
-
-                        update(QRegion(oldRect));
-                } else if (_isMoving && _movingFigure) {
-                        QRect oldRect = _movingFigure->boundingRect();
-                        _isMoving = false;
-                        _movingFigure = nullptr;
-                        setCursor(Qt::ArrowCursor);
-
-                        update(QRegion(oldRect));
-                }
-
-        } else if (_isConnecting && _startConnectionFigure) {
-                QRect startRect = _startConnectionFigure->boundingRect();
-                _startConnectionFigure = nullptr;
-                _isConnecting = false;
-
-                update(QRegion(startRect));
-        }
-}
-
-void MainWindow::mouseMoveEvent(QMouseEvent* event) {
-        if (_isDrawing && _currentFigure) {
-                QRect oldRect = _currentFigure->boundingRect();
-                _currentFigure->updateShape(event->pos());
-                QRect newRect = _currentFigure->boundingRect();
-                update(QRegion(oldRect.united(newRect)));
-
-        } else if (_isMoving && _movingFigure) {
-                QRect oldRect = _movingFigure->boundingRect().adjusted(-5,
-                                                                       -5,
-                                                                       5,
-                                                                       5);
-                QPoint offset = event->pos() - _moveStartPos;
-                _movingFigure->move(offset);
-                QRect newRect = _movingFigure->boundingRect().adjusted(-5,
-                                                                       -5,
-                                                                       5,
-                                                                       5);
-                _moveStartPos = event->pos();
-
-                QRegion updateRegion = QRegion(oldRect.united(newRect));
-
-                for (const auto& connection : std::as_const(_connections)) {
-                        if (connection.first == _movingFigure
-                            || connection.second == _movingFigure) {
-                                QRect connectionRect
-                                    = QRect(connection.first->boundingRect()
-                                                .center(),
-                                            connection.second->boundingRect()
-                                                .center())
-                                          .normalized();
-                                connectionRect = connectionRect.adjusted(-5,
-                                                                         -5,
-                                                                         5,
-                                                                         5);
-                                updateRegion = updateRegion.united(
-                                    QRegion(connectionRect));
-                        }
-                }
-
-                update(updateRegion);
-
-        } else if (_isConnecting && _startConnectionFigure) {
-                _connectionCursor = event->pos();
-                QRect startFigureRect = _startConnectionFigure->boundingRect();
-                QRect lineRect = QRect(startFigureRect.center(),
-                                       _connectionCursor)
-                                     .normalized();
-                QRect cursorRect = QRect(_connectionCursor - QPoint(5, 5),
-                                         QSize(5, 5));
-                QRect updateRect = startFigureRect.united(lineRect).united(
-                    cursorRect);
-                update(QRegion(updateRect));
-        }
-}
-
-void MainWindow::mouseReleaseEvent(QMouseEvent* event) {
-        if (_isDrawing && event->button() == Qt::LeftButton) {
-                _figures.append(_currentFigure);
-
-                QRect figureRect = _currentFigure->boundingRect();
-
-                _currentFigure = nullptr;
-                _isDrawing = false;
-
-                update(QRegion(figureRect));
-        } else if (_isMoving && event->button() == Qt::LeftButton) {
-                QRect oldRect = _movingFigure->boundingRect();
-
-                _isMoving = false;
-                _movingFigure = nullptr;
-                setCursor(Qt::ArrowCursor);
-
-                update(QRegion(oldRect));
-        }
-}
-
-void MainWindow::keyPressEvent(QKeyEvent* event) {
-        if (event->key() == Qt::Key_Escape) {
-                if (_isDrawing) {
-                        _currentFigure = nullptr;
-                        _isDrawing = false;
-                        update();
-                } else if (_isMoving) {
-                        _isMoving = false;
-                        _movingFigure = nullptr;
-                        setCursor(Qt::ArrowCursor);
-                        update();
-                } else if (_isConnecting) {
-                        _startConnectionFigure = nullptr;
-                        _isConnecting = false;
-                        update();
-                }
-        }
-
-        QMainWindow::keyPressEvent(event);
-}
-
-void MainWindow::paintEvent(QPaintEvent* event) {
-        QPainter painter(this);
-
-        if (!_backgroundPixmap.isNull()) {
-                painter.drawPixmap(0, 0, _backgroundPixmap);
-        } else {
-                painter.fillRect(rect(), Qt::white);
-        }
-
-        for (const auto& figure : std::as_const(_figures)) {
-                figure->draw(painter);
-        }
-
-        painter.setPen(QPen(Qt::black, 2));
-        for (const auto& connection : std::as_const(_connections)) {
-                Shapes::IShapes* start = connection.first;
-                Shapes::IShapes* end = connection.second;
-                if (start && end) {
-                        painter.drawLine(start->getCenter(), end->getCenter());
-                }
-        }
-
-        if (_isDrawing && _currentFigure) {
-                _currentFigure->draw(painter);
-        }
-
-        if (_isConnecting && _startConnectionFigure) {
-                QPoint startPoint = _startConnectionFigure->getCenter();
-                painter.setPen(QPen(Qt::black, 2));
-                painter.drawLine(startPoint, _connectionCursor);
-        }
 }

@@ -17,9 +17,12 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 
 set(PROJECT_SOURCES
+    SourceFiles/stdafx.h
     SourceFiles/main.cpp
     SourceFiles/mainwindow.cpp
     SourceFiles/mainwindow.h
+    SourceFiles/shape_editor_widget.h
+    SourceFiles/shape_editor_widget.cpp
     SourceFiles/shapes/IShape.h
     SourceFiles/shapes/rectangle.h
     SourceFiles/shapes/rectangle.cpp
@@ -39,7 +42,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(MyPaint
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        SourceFiles/stdafx.h
 
     )
 else()

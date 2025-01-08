@@ -1,10 +1,10 @@
 улучшить update сделать его для области
         +-сделал надо еще думать
 
-Декомпозиция  MainWindow
++Декомпозиция  MainWindow
 
-посмотреть где можно использовать namespace и анонимные namespace
-        сделал подупоть про анонимные namespace
++посмотреть где можно использовать namespace и анонимные namespace
+        сделал подумать про анонимные namespace
 
 умные указатели + уйти от new сделать make
 
@@ -14,7 +14,7 @@
 предсказатель переходов (Branch prediction)
         Fetch -> Decode -> Execute  -> Memory Access ->  Write Back
 
-выбрать что лучше tig vs gitk
++выбрать что лучше tig vs gitk
 
 
 многопоточность vs асинхронность

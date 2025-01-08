@@ -1,3 +1,4 @@
+#include "file_manager.h"
 #include "IShape.h"
 #include "figure_factory.h"
 
