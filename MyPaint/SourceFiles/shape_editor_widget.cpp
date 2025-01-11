@@ -7,8 +7,7 @@ ShapeEditorWidget::ShapeEditorWidget() {
 void ShapeEditorWidget::mousePressEvent(QMouseEvent* event) {
         if (event->button() == Qt::LeftButton) {
                 if (_isDrawing && _currentFigure) {
-                        _startPoint = event->pos();
-                        _currentFigure->initialize(_startPoint);
+                        _currentFigure->initialize(event->pos());
                         return;
                 } else if (_isMoving) {
                         _movingFigure = nullptr;
@@ -199,9 +198,7 @@ void ShapeEditorWidget::paintEvent(QPaintEvent* event) {
         QPainter painter(this);
         painter.setPen(QPen(Qt::black, 2));
 
-        if (_backgroundPixmap.isNull()) {
-                painter.fillRect(rect(), Qt::white);
-        }
+        painter.fillRect(rect(), Qt::white);
 
         if (_isDrawing && _currentFigure) {
                 _currentFigure->draw(painter);
