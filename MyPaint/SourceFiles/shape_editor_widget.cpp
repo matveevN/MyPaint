@@ -6,10 +6,9 @@ ShapeEditorWidget::ShapeEditorWidget() {
 
 void ShapeEditorWidget::mousePressEvent(QMouseEvent* event) {
         if (event->button() == Qt::LeftButton) {
-                if (_isDrawing) {
+                if (_isDrawing && _currentFigure) {
                         _startPoint = event->pos();
-                        if (_currentFigure)
-                                _currentFigure->initialize(_startPoint);
+                        _currentFigure->initialize(_startPoint);
                         return;
                 } else if (_isMoving) {
                         _movingFigure = nullptr;
@@ -112,17 +111,16 @@ void ShapeEditorWidget::mousePressEvent(QMouseEvent* event) {
                         QRect oldRect = _movingFigure->boundingRect();
                         _isMoving = false;
                         _movingFigure = nullptr;
-                        setCursor(Qt::ArrowCursor);
+                        QApplication::restoreOverrideCursor();
 
                         update(QRegion(oldRect));
+                } else if (_isConnecting && _startConnectionFigure) {
+                        QRect startRect = _startConnectionFigure->boundingRect();
+                        _startConnectionFigure = nullptr;
+                        _isConnecting = false;
+
+                        update(QRegion(startRect));
                 }
-
-        } else if (_isConnecting && _startConnectionFigure) {
-                QRect startRect = _startConnectionFigure->boundingRect();
-                _startConnectionFigure = nullptr;
-                _isConnecting = false;
-
-                update(QRegion(startRect));
         }
 }
 
@@ -134,16 +132,9 @@ void ShapeEditorWidget::mouseMoveEvent(QMouseEvent* event) {
                 update(QRegion(oldRect.united(newRect)));
 
         } else if (_isMoving && _movingFigure) {
-                QRect oldRect = _movingFigure->boundingRect().adjusted(-5,
-                                                                       -5,
-                                                                       5,
-                                                                       5);
-                QPoint offset = event->pos() - _moveStartPos;
-                _movingFigure->move(offset);
-                QRect newRect = _movingFigure->boundingRect().adjusted(-5,
-                                                                       -5,
-                                                                       5,
-                                                                       5);
+                QRect oldRect = _movingFigure->boundingRect();
+                _movingFigure->move(event->pos() - _moveStartPos);
+                QRect newRect = _movingFigure->boundingRect();
                 _moveStartPos = event->pos();
 
                 QRegion updateRegion = QRegion(oldRect.united(newRect));
@@ -197,9 +188,39 @@ void ShapeEditorWidget::mouseReleaseEvent(QMouseEvent* event) {
 
                 _isMoving = false;
                 _movingFigure = nullptr;
-                setCursor(Qt::ArrowCursor);
+
+                QApplication::restoreOverrideCursor();
 
                 update(QRegion(oldRect));
+        }
+}
+
+void ShapeEditorWidget::paintEvent(QPaintEvent* event) {
+        QPainter painter(this);
+        painter.setPen(QPen(Qt::black, 2));
+
+        if (_backgroundPixmap.isNull()) {
+                painter.fillRect(rect(), Qt::white);
+        }
+
+        if (_isDrawing && _currentFigure) {
+                _currentFigure->draw(painter);
+        }
+
+        for (const auto& figure : std::as_const(_figures)) {
+                figure->draw(painter);
+        }
+
+        if (_isConnecting && _startConnectionFigure) {
+                painter.drawLine(_startConnectionFigure->getCenter(),
+                                 _connectionCursor);
+        }
+
+        for (const auto& connection : std::as_const(_connections)) {
+                if (connection.first && connection.second) {
+                        painter.drawLine(connection.first->getCenter(),
+                                         connection.second->getCenter());
+                }
         }
 }
 
@@ -212,7 +233,7 @@ void ShapeEditorWidget::keyPressEvent(QKeyEvent* event) {
                 } else if (_isMoving) {
                         _isMoving = false;
                         _movingFigure = nullptr;
-                        setCursor(Qt::ArrowCursor);
+                        QApplication::restoreOverrideCursor();
                         update();
                 } else if (_isConnecting) {
                         _startConnectionFigure = nullptr;
@@ -222,39 +243,6 @@ void ShapeEditorWidget::keyPressEvent(QKeyEvent* event) {
         }
 
         ShapeEditorWidget::keyPressEvent(event);
-}
-
-void ShapeEditorWidget::paintEvent(QPaintEvent* event) {
-        QPainter painter(this);
-
-        if (!_backgroundPixmap.isNull()) {
-                painter.drawPixmap(0, 0, _backgroundPixmap);
-        } else {
-                painter.fillRect(rect(), Qt::white);
-        }
-
-        for (const auto& figure : std::as_const(_figures)) {
-                figure->draw(painter);
-        }
-
-        painter.setPen(QPen(Qt::black, 2));
-        for (const auto& connection : std::as_const(_connections)) {
-                Shapes::IShapes* start = connection.first;
-                Shapes::IShapes* end = connection.second;
-                if (start && end) {
-                        painter.drawLine(start->getCenter(), end->getCenter());
-                }
-        }
-
-        if (_isDrawing && _currentFigure) {
-                _currentFigure->draw(painter);
-        }
-
-        if (_isConnecting && _startConnectionFigure) {
-                QPoint startPoint = _startConnectionFigure->getCenter();
-                painter.setPen(QPen(Qt::black, 2));
-                painter.drawLine(startPoint, _connectionCursor);
-        }
 }
 
 QVector<Shapes::IShapes*>& ShapeEditorWidget::getFigures() {
@@ -291,8 +279,6 @@ void ShapeEditorWidget::setIsMoving(bool isMoving) {
 
         if (_isMoving) {
                 QApplication::setOverrideCursor(Qt::ClosedHandCursor);
-        } else {
-                QApplication::restoreOverrideCursor();
         }
 }
 

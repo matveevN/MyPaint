@@ -12,19 +12,16 @@ void FileManager::saveToImageWithMetadata(
         QPixmap canvas(width, height);
         canvas.fill(Qt::white);
         QPainter painter(&canvas);
+        painter.setPen(Qt::black);
 
         for (const auto& figure : figures) {
                 figure->draw(painter);
         }
 
-        painter.setPen(Qt::black);
         for (const auto& connection : connections) {
-                Shapes::IShapes* startFigure = connection.first;
-                Shapes::IShapes* endFigure = connection.second;
-
-                if (startFigure && endFigure) {
-                        painter.drawLine(startFigure->getCenter(),
-                                         endFigure->getCenter());
+                if (connection.first && connection.second) {
+                        painter.drawLine(connection.first->getCenter(),
+                                         connection.second->getCenter());
                 }
         }
         painter.end();
@@ -34,7 +31,6 @@ void FileManager::saveToImageWithMetadata(
                 return;
         }
 
-        QJsonObject rootObject;
         QJsonArray figuresArray;
         QJsonArray connectionsArray;
 
@@ -67,6 +63,7 @@ void FileManager::saveToImageWithMetadata(
                 //                                    {"endIndex", endIdx}});
         }
 
+        QJsonObject rootObject;
         rootObject["figures"] = figuresArray;
         rootObject["connections"] = connectionsArray;
 
