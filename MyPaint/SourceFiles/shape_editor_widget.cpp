@@ -174,6 +174,12 @@ void ShapeEditorWidget::mouseMoveEvent(QMouseEvent* event) {
 
 void ShapeEditorWidget::mouseReleaseEvent(QMouseEvent* event) {
         if (_isDrawing && event->button() == Qt::LeftButton) {
+                _figures.reserve(10);
+                _connections.reserve(4);
+                //  qDebug() << "cap" << _figures.capacity();
+                // qDebug() << "size " << _figures.size();
+                //qDebug() << "cap" << _connections.capacity();
+                // qDebug() << "size " << _connections.size();
                 _figures.append(_currentFigure);
 
                 QRect figureRect = _currentFigure->boundingRect();
